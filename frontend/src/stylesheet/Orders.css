@@ -1,0 +1,57 @@
+.orders-list {
+    width: 90%;
+    box-sizing: border-box;
+    padding: 20px;
+    padding-bottom: 45px;
+    margin: 25px 0px;
+    border-radius: 15px;
+    background-color: var(--card-bg);
+    position: relative;
+}
+
+.orders-list-header {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: bold;
+    margin: 20px 0px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid red; */
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    border-bottom: 1px solid var(--text);
+}
+
+.orders-list-body {
+    color: var(--text);
+    font-size: 11px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid red; */
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.orders-list-element {
+    color: var(--text);
+    font-size: 11px;
+    background-color: var(--mess-outer);
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+}
+
+.orders-list-element-inner {
+    display: flex;
+    text-align: center;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+}
+

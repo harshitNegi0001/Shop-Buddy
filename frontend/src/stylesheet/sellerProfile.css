@@ -1,0 +1,180 @@
+.seller-profile {
+  width: 90%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.profile-edit,
+.change-pass {
+  width: 45%;
+  min-width: 287px;
+  margin: 10px 0;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 15px;
+  background-color: var(--card-bg);
+}
+
+.change-image {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 100px;
+}
+
+.change-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.edit-info,
+.shop-info {
+  width: 90%;
+  position: relative;
+  background-color: var(--highlight);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  font-size: 12px;
+  gap: 8px;
+  color: var(--text);
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.edit-info-data {
+  font-weight: bold;
+  margin-right: 3px;
+}
+
+.edit-info-span-green {
+  padding: 3px;
+  background-color: green;
+  border-radius: 5px;
+  color: white;
+}
+
+.edit-info-span-blue {
+  padding: 3px;
+  background-color: blue;
+  border-radius: 5px;
+  color: white;
+}
+
+.edit-info-btn {
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: yellow;
+  color: black;
+  border-radius: 5px;
+  font-size: 18px;
+}
+
+.edit-info-btn:hover {
+  background-color: rgb(185, 185, 0);
+}
+
+.edit-info-btn:active {
+  background-color: rgb(185, 185, 0);
+  transition: all 50ms;
+  transform: scale(0.95);
+}
+
+.edit-shop-detail input,
+.change-pass input {
+  background: none;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid var(--text);
+  border-radius: 5px;
+  height: 35px;
+  outline: none;
+  padding: 0 5px;
+  color: var(--text);
+}
+
+
+.change-image span {
+  position: absolute;
+  right: 0;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: none;
+}
+
+.change-image:hover span {
+  display: flex;
+}
+
+.edit-shop-detail,
+.change-pass-form {
+  color: var(--text);
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.edit-shop-detail div,
+.change-pass-form div {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0;
+}
+
+.edit-shop-detail button,
+.change-pass-form button {
+  background-color: var(--sec-btn);
+  cursor: pointer;
+  width: 120px;
+  height: 35px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.edit-shop-detail button:hover,
+.change-pass-form button:hover {
+  background-color: #ff3c22;
+  transition: all 500ms;
+  transform: scale(0.95);
+}
+
+.edit-shop-detail button:active,
+.change-pass-form button:active {
+  transition: all 100ms;
+  transform: scale(0.9);
+}
+
+@media (max-width:650px) {
+
+  .profile-edit,
+  .change-pass {
+    width: 90%;
+  }
+}
