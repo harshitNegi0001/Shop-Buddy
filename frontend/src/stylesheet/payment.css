@@ -1,0 +1,170 @@
+
+.upper-dash {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 100%;
+  padding: 30px 10px;
+  height: auto;
+}
+
+
+
+.small-upper-dash {
+  background-color: rgb(129, 199, 132);
+  width: 12vw;
+  border-radius: 10px;
+  min-width: 170px;
+  max-width: 200px;
+  height: 90px;
+  margin: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  
+}
+#rupee-curr-dash{
+  background-color: green;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#product-curr-dash{
+  background-color: purple;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#seller-curr-dash{
+  background-color: orange;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#order-curr-dash{
+  background-color: blue;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#rupee-curr-dash svg ,
+#product-curr-dash svg,
+#seller-curr-dash svg,
+#order-curr-dash svg {
+    
+    fill: black;
+}
+
+.payment-middle{
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.sendRequest,
+.successWindow{
+  width: 48%;
+  min-width: 288px;
+  box-sizing: border-box;
+  background-color: var(--card-bg);
+  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  margin: 10px 0px;
+  color: var(--text);
+}
+.send-req{
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 10px;
+  color: var(--text);
+}
+.send-req input{
+  width: 70%;
+  height: 35px;
+  color: var(--text);
+  border: 2px solid var(--text);
+  box-sizing: border-box;
+  background: none;
+  outline: none;
+  border-radius: 10px;
+  margin-right: 10px;
+  padding: 5px;
+}
+.send-req button{
+  width: 60px;
+  height: 35px;
+  border: none;
+  background-color: var(--sec-btn);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.send-req button:hover{
+    background-color: #ff3c22;
+    transition: all 500ms;
+    transform: scale(0.95);
+}
+.send-req button:active{
+    transition: all 100ms;
+    transform: scale(0.9);
+}
+.pending-req{
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  color: var(--text);
+  margin-top: 20px;
+}
+.pay-req-header{
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    padding: 5px 5px 0px 5px;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 12px;
+    border-bottom: 1px solid var(--text);
+    margin: 10px 0px;
+}
+@media (max-width: 870px) {
+  .sendRequest,
+.successWindow{
+    width: 100%;
+  }
+}
+@media (max-width: 750px) {
+  .sendRequest,
+.successWindow{
+    width: 48%;
+  }
+}
+@media (max-width: 660px) {
+  .sendRequest,
+.successWindow{
+    width: 100%;
+  }
+}

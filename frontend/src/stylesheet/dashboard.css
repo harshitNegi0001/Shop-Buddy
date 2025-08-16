@@ -1,0 +1,138 @@
+.admin-dash {
+  width: 92%;
+  
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.upper-dash {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 100%;
+  padding: 30px 10px;
+  height: auto;
+}
+
+
+
+.small-upper-dash {
+  background-color: rgb(129, 199, 132);
+  width: 12vw;
+  border-radius: 10px;
+  min-width: 120px;
+  max-width: 200px;
+  height: 90px;
+  margin: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  
+}
+#rupee-curr-dash{
+  background-color: green;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#product-curr-dash{
+  background-color: purple;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#seller-curr-dash{
+  background-color: orange;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#order-curr-dash{
+  background-color: blue;
+  width: 25px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  
+}
+#rupee-curr-dash svg ,
+#product-curr-dash svg,
+#seller-curr-dash svg,
+#order-curr-dash svg {
+    
+    fill: black;
+}
+.middle-dash {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.main-quick {
+  display: flex;
+  width: 250px;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+.pre-box{
+  width: 220px;
+  border-radius: 10px;
+  background-color: rgb(35, 148, 86);
+  color: var(--text);
+  padding: 0px 5px;
+}
+.pre-box span{
+  font-size: 12px;
+}
+.message-box {
+  background-color: var(--sec-back);
+  font-size: 10px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  padding: 5px;
+}
+.quick-message {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  min-width: 250px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ensures full width children */
+  padding: 10px;
+  box-sizing: border-box;
+}
+@media(max-width:1015px){
+  .chart{
+    width: 100%;
+  }
+  .quick-message{
+    width: 100%;
+    margin-top:20px
+  }
+}
+@media(min-width:1016px){
+  .chart{
+    width: 55%;
+  }
+  .quick-message{
+    width: 40%;
+  }
+}
