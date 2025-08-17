@@ -46,7 +46,7 @@ function AdminLogin() {
                 else {
                     toast.success(result.message);
                     localStorage.setItem('accesstoken',result.token);
-                    navigate('/')
+                    navigate('/');
                 }
 
             }

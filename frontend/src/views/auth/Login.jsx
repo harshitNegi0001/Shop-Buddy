@@ -3,16 +3,17 @@ import emailSvg from '../../assets/email-svgrepo-com.svg';
 import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
-import { Link } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 import loading from '../../assets/loading3.webp'
 import { useActionState, useState } from 'react';
 import toast from 'react-hot-toast';
 
 function Login() {
+    const navigate = useNavigate();
     async function handleInput(pre,curr){
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
-
+        
         if(email&&password){
             // input validations...
             const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,7 +26,7 @@ function Login() {
             //if all input are okk
             //then submit data
             try{
-                const response = await fetch('http://localhost:5000/api/user-login',{
+                const response = await fetch('http://localhost:5000/api/seller-login',{
                     method:"POST",
                     headers:{
                         "content-type":"application/json"
@@ -33,7 +34,8 @@ function Login() {
                     body:JSON.stringify({
                         email:email,
                         password:password
-                    })
+                    }),
+                    credentials:"include"
                 });
                 const result = await response.json();
                 if(!response.ok){
@@ -41,6 +43,7 @@ function Login() {
                 }
                 else{
                     toast.success(result.message);
+                    navigate('/')
                 }
                 
             }

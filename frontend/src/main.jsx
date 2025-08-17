@@ -7,9 +7,11 @@ import shopBuddyIcon from '/shopBuddyIcon.png';
 // const App = lazy(()=> import('./App.jsx'))
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Provider } from 'react-redux';
+import store from "./store";
 
 createRoot(document.getElementById('root')).render(
-  
+  <Provider store={store}>
     <BrowserRouter>
     <Suspense fallback={<div><img src={shopBuddyIcon} width={'80px'} alt="loading icon" /></div>}><App /></Suspense>
       
@@ -24,6 +26,6 @@ createRoot(document.getElementById('root')).render(
       }}
     />
     </BrowserRouter>
-    
+    </Provider>
   ,
 )
