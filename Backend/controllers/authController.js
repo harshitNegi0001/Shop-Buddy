@@ -6,6 +6,7 @@ import db from '../utiles/db.js';
 import bcrypt from 'bcrypt';
 import returnRes from '../utiles/response.js';
 import { createToken } from '../utiles/createToken.js';
+// import pool from '../utiles/db.js';
 
 class AuthController {
   adminLogin = async (req, res) => {
@@ -45,18 +46,60 @@ class AuthController {
   }
   //end admin-login method
 
-  getUser = async (req,res)=>{
-    const {role,id} =req;
+  getUser = async (req, res) => {
+    const { role, id } = req;
     try {
-      if(role==='admin'){
-        const user = await db.query('SELECT * FROM admins WHERE id = $1',[id]);
-        return returnRes(res,200,{userInfo:user});
+      if (role === 'admin') {
+        const user = await db.query('SELECT * FROM seller_login_info');
+        return returnRes(res, 200, { userInfo: user.rows });
       }
-      else{
+      else {
         console.log("seller info");
       }
     } catch (err) {
       console.log(err.message);
+    }
+  }
+
+  //seller registeration start
+  sellerRegister = async (req, res) => {
+    const { name, email, password } = req.body;
+    //check dublicate email
+    try {
+      const searchEmail = await db.query("SELECT * FROM seller_info WHERE s_email = $1", [email]);
+      if (searchEmail.rows.length>0) {
+        return returnRes(res, 409, { message: "This email is already registered" });
+      }
+      const hasedPass =await bcrypt.hash(password,10);
+      const result = await db.query("INSERT INTO seller_info(s_name,s_email,s_pass) VALUES ($1,$2,$3)",[name,email,hasedPass]);
+      if(result){
+        console.log(result);
+      }
+      return returnRes(res,200,{message:"Registered Successful"});
+      
+    }
+    catch(err){
+      return returnRes(res,400,{message:err.message});
+    }
+  }
+
+  //seller login start
+  sellerLogin = async(req,res)=>{
+    const {email,password} = req.body;
+
+    try{
+      const searchEmail = await db.query('SELECT * FROM seller_info WHERE s_email = $1',[email]);
+      if(searchEmail.rows.length<1){
+        return returnRes(res,401,{message:"Wrong Email Or Password"});
+      }
+      const result = await bcrypt.compare(password,searchEmail.rows[0].s_pass);
+      if(result){
+        return returnRes(res,200,{message:`Welcome back ${searchEmail.rows[0].s_name}`});
+      }
+      return returnRes(res,401,{message:"Wrong Email Or Password"});
+    }
+    catch(err){
+      return returnRes(res,400,{message:err.message});
     }
   }
 }

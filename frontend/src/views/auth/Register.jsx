@@ -6,16 +6,18 @@ import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
 import { useActionState, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import loading from '../../assets/loading3.webp'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
 function Register() {
+    // const dispatch = useDispatch()
     // const {loader} = useSelector(state=>state.auth)
-    function handleInput(pre, curr) {
+    const navigate = useNavigate();
+    async function handleInput(pre, curr) {
         const name = curr.get('name').trim();
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
@@ -42,9 +44,28 @@ function Register() {
             }
 
             try {
-                //fetch data
-                //submitted then redirect to
-                toast.success("Sign up successfully");
+                const response = await fetch('http://localhost:5000/api/seller-register',{
+                    method:'POST',
+                    headers:{
+                        "content-type":"application/json"
+                    },
+                    body:JSON.stringify({
+                        name:name,
+                        email:email,
+                        password:password
+                    }),
+                    credentials: "include"
+                })
+                const result =await response.json();
+                if (!response.ok) {
+                    toast.error(result.message);
+                    console.log(result.message);
+                }
+                else {
+                    toast.success(result.message);
+                    // localStorage.setItem('accesstoken',result.token);
+                    navigate('/');
+                }
             }
             catch (err) {
                 setErrMessage(err.message);
