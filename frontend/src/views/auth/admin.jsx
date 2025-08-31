@@ -4,11 +4,14 @@ import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
 import loading from '../../assets/loading3.webp'
-import { useActionState, useState } from 'react';
+import { useActionState,useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/role_management';
+import { jwtDecode } from "jwt-decode";
 
 function AdminLogin() {
+    const {login} = useContext(AuthContext)
     const navigate = useNavigate();
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
@@ -39,14 +42,15 @@ function AdminLogin() {
                     credentials: "include"
                 });
                 const result = await response.json();
-                console.log(result);
+                
                 if (!response.ok) {
                     toast.error(result.message);
                 }
                 else {
                     toast.success(result.message);
-                    localStorage.setItem('accesstoken',result.token);
-                    navigate('/');
+                    const decodeToken = jwtDecode(result.token);
+                    login(result.token,decodeToken.role,decodeToken.id);
+                    // navigate('/');
                 }
 
             }

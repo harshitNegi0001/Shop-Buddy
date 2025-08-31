@@ -1,21 +1,32 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import sideBarLogo from '../assets/sidebar-shopBuddyLogo.png';
 import { useEffect, useState } from 'react';
 import { getNav } from '../navigation/index';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { MdClose } from "react-icons/md";
+import { useContext } from 'react';
+import { AuthContext } from '../context/role_management.jsx';
 function Sidebar({ setSidebar, sidebar }) {
+    
     const { pathname } = useLocation();
     const [allNav, setAllNav] = useState([]);
+    const {auth,logout} = useContext(AuthContext);
+    const navigate = useNavigate();
     useEffect(() => {
-        const navs = getNav('seller');
-        setAllNav(navs)
-    }, []);
+        if(!auth.role){
+            navigate('/login')
+        }
+        else{
+            const navs = getNav(auth.role);
+            setAllNav(navs)
+        }
+        
+    }, [auth.role]);
 
     return (
         <div className={`scrollable sidebar ${sidebar ? 'show-sidebar' : 'notShow-sidebar'}`} >
             <div style={{ display: "flex", margin: "25px" }}>
-                <Link to="/">
+                <Link to="/" onClick={()=>setSidebar(false)}>
                     <img src={sideBarLogo} alt="logo" style={{ width: "150px" }} />
 
                 </Link>
@@ -29,7 +40,7 @@ function Sidebar({ setSidebar, sidebar }) {
                         allNav.map((n, i) =>
                             <li key={i} >
 
-                                <Link to={n.path} className={`${pathname === n.path ? 'active-tab' : 'normal-tab'}`} style={{ textDecoration: "none", display: "flex", gap: "20px", padding: "5px" }}>
+                                <Link to={n.path} onClick={()=>setSidebar(false)}  className={`${pathname === n.path ? 'active-tab' : 'normal-tab'}`} style={{ textDecoration: "none", display: "flex", gap: "20px", padding: "5px" }}>
                                     <span>{n.icon}</span>
                                     <span>{n.title}</span>
                                 </Link>
@@ -38,7 +49,7 @@ function Sidebar({ setSidebar, sidebar }) {
                     }
 
                     <li>
-                        <button className='logout-btn'>
+                        <button className='logout-btn' onClick={()=>logout()}>
                             <span><BiLogOutCircle /></span>
                             <span>Log Out</span>
                         </button>

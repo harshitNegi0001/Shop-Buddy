@@ -3,21 +3,22 @@ import emailSvg from '../../assets/email-svgrepo-com.svg';
 import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
-import { Link,  useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import loading from '../../assets/loading3.webp'
-import { useActionState, useState } from 'react';
+import { useActionState, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
-
+import { AuthContext } from '../../context/role_management';
+import { jwtDecode } from "jwt-decode";
 function Login() {
-    const navigate = useNavigate();
-    async function handleInput(pre,curr){
+    const { login } = useContext(AuthContext)
+    async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
-        
-        if(email&&password){
+
+        if (email && password) {
             // input validations...
             const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if(!checkEmail.test(email)){
+            if (!checkEmail.test(email)) {
                 setErrMessage("Invalid Email Format");
                 toast.error("Invalid Email Format");
                 return;
@@ -25,40 +26,42 @@ function Login() {
 
             //if all input are okk
             //then submit data
-            try{
-                const response = await fetch('http://localhost:5000/api/seller-login',{
-                    method:"POST",
-                    headers:{
-                        "content-type":"application/json"
+            try {
+                const response = await fetch('http://localhost:5000/api/seller-login', {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json"
                     },
-                    body:JSON.stringify({
-                        email:email,
-                        password:password
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
                     }),
-                    credentials:"include"
+                    credentials: "include"
                 });
                 const result = await response.json();
-                if(!response.ok){
+                if (!response.ok) {
                     toast.error(result.message);
                 }
-                else{
+                else {
                     toast.success(result.message);
-                    navigate('/')
+                    const decodeToken = jwtDecode(result.token);
+                    login(result.token, decodeToken.role, decodeToken.id);
+                    // navigate('/');
                 }
-                
+
             }
-            catch(err){
+            catch (err) {
                 setErrMessage(err.message);
                 toast.error(err.message);
             }
         }
-        else{
+        else {
             setErrMessage("Please enter all inputs");
             return;
         }
-        
+
     }
-    const [data,action,pendding] = useActionState(handleInput);
+    const [data, action, pendding] = useActionState(handleInput);
     const [errMessage, setErrMessage] = useState('')
     return (
         <div className='auth-container'>
@@ -70,9 +73,9 @@ function Login() {
 
                 <img src={wrongSvg} alt="" onClick={() => setErrMessage('')} />
             </div>}
-            {pendding&&<div className='load-back'>
-                            <img className='loading' src={loading} alt='loading...' />
-                        </div>}
+            {pendding && <div className='load-back'>
+                <img className='loading' src={loading} alt='loading...' />
+            </div>}
             <div className="authContainer" style={{}}>
                 <div className="sideImgContainer" >
                     {/* Image here */}
