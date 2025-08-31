@@ -78,15 +78,15 @@ function SellerProfile() {
                     <form action="">
                         <div >
                             <label htmlFor="change-pass-email">Email</label>
-                            <input type="email" id="change-pass-email"  />
+                            <input type="email" id="change-pass-email" required  />
                         </div>
                         <div >
                             <label htmlFor="change-pass-pass">Password</label>
-                            <input type="password" id="change-pass-pass"  />
+                            <input type="password" id="change-pass-pass" required autoComplete="old-pass" />
                         </div>
                         <div >
                             <label htmlFor="change-pass-new-pass">New Password</label>
-                            <input type="password" id="change-pass-new-pass"  />
+                            <input type="password" id="change-pass-new-pass" required autoComplete="new-pass"/>
                         </div>
 
                         <button type="submit" >Submit</button>

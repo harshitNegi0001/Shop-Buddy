@@ -5,11 +5,13 @@ import lockSvg from '../../assets/lock-svgrepo-com.svg';
 import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
-import { useActionState, useState } from 'react';
+import { useActionState, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import loading from '../../assets/loading3.webp'
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
+import { AuthContext } from '../../context/role_management';
+import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -17,6 +19,7 @@ function Register() {
     // const dispatch = useDispatch()
     // const {loader} = useSelector(state=>state.auth)
     const navigate = useNavigate();
+    const {login} = useContext(AuthContext);
     async function handleInput(pre, curr) {
         const name = curr.get('name').trim();
         const email = curr.get('email').trim();
@@ -63,8 +66,9 @@ function Register() {
                 }
                 else {
                     toast.success(result.message);
-                    // localStorage.setItem('accesstoken',result.token);
-                    navigate('/');
+                    const decodeToken = jwtDecode(result.token);
+                    login(result.token,decodeToken.role,decodeToken.id);
+                    // navigate('/');
                 }
             }
             catch (err) {

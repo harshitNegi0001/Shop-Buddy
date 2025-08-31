@@ -9,4 +9,6 @@ router.get('/get-user',authMiddleware, authController.getUser);
 router.post('/seller-register',authController.sellerRegister);
 router.post('/seller-login',authController.sellerLogin);
 
+
+
 export default router;

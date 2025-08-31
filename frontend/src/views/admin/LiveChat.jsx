@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 function LiveChat() {
-    const { sellerId } = useParams(); // URL से sellerId कैप्चर
+    const { sellerId } = useParams(); 
     const navigate = useNavigate();
 
     const [showChat, setShowChat] = useState(sellerId?true:false);
@@ -28,7 +28,7 @@ function LiveChat() {
     }, [windowWidth]);
 
     useEffect(() => {
-        // अगर URL में sellerId है तो चैट खोल दो
+        
         if (sellerId) {
             setShowChat(true);
         }

@@ -14,6 +14,7 @@ function Pagination({currPage,setCurrPage,totalItem,parPage,showItem}){
 
     const createBtn=()=>{
         const btns = [];
+        endPage = (endPage>totalPage)?totalPage:endPage;
         for (let i = startPage; i <= endPage; i++) {
             btns.push(
                 <li key={i} onClick={e=>setCurrPage(e.target.value)} value={i} className={`${currPage===i?'currPage':'pages'}`} >

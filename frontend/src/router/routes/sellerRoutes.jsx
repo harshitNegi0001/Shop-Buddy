@@ -1,5 +1,4 @@
 import { lazy } from "react";
-
 const Home = lazy(()=>import("../../views/pages/Home.jsx"));
 const SellerDashboard = lazy(()=>import("../../views/seller/SellerDashboard.jsx"));
 const AddProduct = lazy(()=>import("../../views/seller/AddProduct.jsx"));
@@ -12,13 +11,15 @@ const SellerToAdmin = lazy(()=>import("../../views/seller/SellerToAdmin.jsx"));
 const SellerProfile = lazy(()=>import("../../views/seller/SellerProfile.jsx"));
 const EditProduct = lazy(()=>import("../../views/seller/EditProducts.jsx"));
 const OrderDetails = lazy(()=>import("../../views/seller/OrderDetails.jsx"));
+const Pending = lazy(()=>import("../../views/Pending.jsx"));
+const Deactive = lazy(()=>import("../../views/Deactive.jsx"));
 
 
 export const sellerRoutes = [
     {
         path:'/',
         element:<Home/>,
-        ability:['admin','seller']
+        role:['admin','seller']
     },
     {
         path:'/seller/dashboard',
@@ -48,13 +49,13 @@ export const sellerRoutes = [
         path:'/seller/dashboard/orders',
         element:<Orders/>,
         role:'seller',
-        ability:['active','deactive']
+        visibility:['active','deactive']
     },
     {
         path:'/seller/dashboard/order/detail/:id',
         element:<OrderDetails/>,
         role:'seller',
-        ability:['active','deactive']
+        visibility:['active','deactive']
     },
     {
         path:'/seller/dashboard/payment',
@@ -78,7 +79,7 @@ export const sellerRoutes = [
         path:'/seller/dashboard/chat-support',
         element:<SellerToAdmin/>,
         role:'seller',
-        ability:['active','deactive','pending']
+        visibility:['active','deactive','pending']
     },
     {
         path:'/seller/dashboard/profile',
@@ -87,9 +88,23 @@ export const sellerRoutes = [
         status:'active'
     },
     {
-        path:'/seller/dashboard/edit-product',
+        path:'/seller/dashboard/edit-product/:productId',
         element:<EditProduct/>,
         role:'seller',
         status:'active'
+    }
+    ,
+    {
+        path:'/seller/account-pending',
+        element:<Pending/>,
+        role:'seller',
+        status:'pending'
+    },
+    {
+        path:'/seller/account-deactive',
+        element:<Deactive/>,
+        role:'seller',
+        status:'deactive'
+        
     }
 ]

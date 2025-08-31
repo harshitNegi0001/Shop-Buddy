@@ -1,67 +1,115 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import searchIcon from '../../assets/searchIcon.png';
 import Pagination from "../Pagination";
 import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
+import { AuthContext } from "../../context/role_management";
+import { useContext } from "react";
+import loading from '../../assets/loading3.webp';
 
 
 import '../../stylesheet/allProducts.css';
 import { Link } from 'react-router-dom';
-
-function DiscountProduct(){
+import toast from 'react-hot-toast';
+function DiscountProduct() {
+    const { auth } = useContext(AuthContext);
+    const sellerId = auth.id;
+    const [loader, setLoader] = useState(false);
     const [currPage, setCurrPage] = useState(1);
-    //const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState('');
     const [parPage, setParPage] = useState(5);
+    const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
+    const [totalItem, setTotalItem] = useState(0);
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchValue);
+        }, 1000);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchValue]);
+    useEffect(() => {
+        getProducts();
+    }, [debouncedSearch, currPage, parPage]);
+
+    const getProducts = async () => {
+        try {
+            setLoader(true);
+            const response = await fetch(`http://localhost:5000/api/get-products?searchValue=${searchValue}&&parPage=${parPage}&&currPage=${currPage}&&discount=${true}&&sellerId=${sellerId}`);
+            const result = await response.json();
+            setLoader(false);
+            if (!response.ok) {
+                toast.error("Error! " + result.message);
+                setTotalItem(0);
+                setProducts([]);
+            } else {
+                setTotalItem(result.totalItems);
+                setProducts(result.products);
+
+            }
+        }
+        catch (err) {
+            setLoader(false);
+            setTotalItem(0);
+            setProducts([]);
+            toast.error("Error! " + err.message);
+        }
+    }
     return (
         <div className="all-product">
-            <div style={{color:"var(--text)"}}>Discount Products</div>
+            {loader && <div className='load-back'>
+                <img className='loading' src={loading} alt='loading...' />
+            </div>}
+            <div style={{ color: "var(--text)" }}>All Products</div>
             <div className='card-search'>
                 <select name="" id="" onChange={e => setParPage(e.target.value)} >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
                 </select>
-                <div >
-                    <input type="text" id="search-inp" placeholder="Search" />
-                    <img src={searchIcon} alt="Search-icon" />
+                <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                    <input type="text" onChange={(e) => setSearchValue(e.target.value)} value={searchValue} id="search-inp" placeholder="Search" />
+                    <img style={{ width: "20px", position: "absolute", right: "9px" }} src={searchIcon} alt="Search-icon" />
                 </div>
             </div>
-            
-            
+
+
             <div className='disc-prod-list' >
-                <table style={{textAlign:"start"}}>
+                <table style={{ textAlign: "start" }}>
                     <thead >
                         <tr >
-                            <th style={{textAlign:"start"}} >No.</th>
-                            <th style={{textAlign:"start"}}>Image</th>
-                            <th style={{textAlign:"start"}}>Name</th>
-                            <th style={{textAlign:"start"}}>Category</th>
-                            <th style={{textAlign:"start"}}>Brand</th>
-                            <th style={{textAlign:"start"}}>Price</th>
-                            <th style={{textAlign:"start"}}>Discount</th>
-                            <th style={{textAlign:"start"}}>Stock</th>
-                            <th style={{textAlign:"start"}}>Action</th>
+                            <th style={{ textAlign: "start" }} >No.</th>
+                            <th style={{ textAlign: "start" }}>Image</th>
+                            <th style={{ textAlign: "start" }}>Name</th>
+                            <th style={{ textAlign: "start" }}>Category</th>
+                            <th style={{ textAlign: "start" }}>Brand</th>
+                            <th style={{ textAlign: "start" }}>Price</th>
+                            <th style={{ textAlign: "start" }}>Discount</th>
+                            <th style={{ textAlign: "start" }}>Stock</th>
+                            <th style={{ textAlign: "start" }}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {[1,2,3,4,5,6].map((index)=><tr key={index} >
-                            <td>{index}</td>
-                            <td><img style={{width:"40px",backgroundColor:"pink"}} src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp" alt="" /></td>
-                            <td >Essence Mascara Lash Princess</td>
-                            <td>beauty</td>
-                            <td>Essence</td>
-                            <td>$9.99</td>
-                            <td>10%</td>
-                            <td>99</td>
-                            <td ><div style={{display:"flex",gap:"5px",flexWrap:"wrap"}}><Link to='/seller/dashboard/edit-product'><span className='edit-prod-btn' ><CiEdit /></span></Link><span className='delete-prod' ><MdDelete/></span><span className='view-prod' ><FaEye /></span></div></td>
+                        {products.map((prod, index) => <tr key={index} >
+                            <td>{index + 1}</td>
+                            <td><img style={{ width: "40px", backgroundColor: "pink" }} src={prod.images[0]} alt="" /></td>
+                            <td >{prod.name}</td>
+                            <td>{prod.category_name}</td>
+                            <td>{prod.brand}</td>
+                            <td>₹{prod.price}</td>
+                            <td>{prod.discount}%</td>
+                            <td>{prod.stock}</td>
+                            <td ><div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}><Link to={`/seller/dashboard/edit-product/${prod.id}`}><span className='edit-prod-btn' ><CiEdit /></span></Link><span className='delete-prod' ><MdDelete /></span><span className='view-prod' ><FaEye /></span></div></td>
                         </tr>)}
                     </tbody>
                 </table>
             </div>
             <div className='paging-div'>
                 <div >
-                    <Pagination currPage={currPage} setCurrPage={setCurrPage} totalItem={50} parPage={parPage} showItem={3} />
+                    <Pagination currPage={currPage} setCurrPage={setCurrPage} totalItem={totalItem} parPage={parPage} showItem={3} />
                 </div>
             </div>
         </div>
