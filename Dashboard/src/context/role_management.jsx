@@ -14,7 +14,8 @@ export const AuthState = (props) => {
   const navigate =useNavigate()
   const [auth, setAuth] = useState(() => {
     const savedToken = localStorage.getItem("accessToken");
-    const userDetails = localStorage.getItem("userInfo")
+    const userDetails = localStorage.getItem("userInfo");
+    
     if (savedToken) {
       try {
 

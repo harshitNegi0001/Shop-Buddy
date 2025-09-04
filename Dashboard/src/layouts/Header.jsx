@@ -26,7 +26,7 @@ function Header({ setSidebar }) {
                     <span style={{ fontSize: "8px", fontWeight: "bold" }}>{userInfo.s_role || userInfo.role}</span>
                 </div>
                 <div style={{ width: "25px", height: "25px", borderRadius: "15px" }} className="dp" >
-                    <img style={{ borderRadius: "15px", width: "25px", height: "25px" }} src={userInfo.s_image || userInfo.image} alt="admin-pic" />
+                    <img style={{ borderRadius: "15px", width: "25px", height: "25px",objectFit:"cover" }} src={userInfo.s_image || userInfo.image} alt="admin-pic" />
                 </div>
             </div>
         </div>

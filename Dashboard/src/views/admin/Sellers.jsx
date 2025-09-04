@@ -87,7 +87,7 @@ function Sellers() {
                 {sellers.map((seller, index) => <div key={index} className="sellers-body">
                     <div style={{ width: "8%", overflow: "scroll", scrollbarWidth: "none" }}>{index + 1}</div>
                     <div style={{ width: "20%", overflow: "scroll", scrollbarWidth: "none" }}>{seller.s_name}</div>
-                    <div style={{ width: "18%", overflow: "scroll", scrollbarWidth: "none" }}>{seller.shop_info || 'not availible'}</div>
+                    <div style={{ width: "18%", overflow: "scroll", scrollbarWidth: "none" }}>{seller.shop_info?.shopName || 'not availible'}</div>
                     <div style={{ width: "15%", overflow: "scroll", scrollbarWidth: "none" }}>{seller.s_payment}</div>
                     <div style={{ width: "25%", overflow: "scroll", scrollbarWidth: "none" }}>{seller.s_email}</div>
                     <div style={{ width: "14%", display: "flex", justifyContent: "center" }}><Link to={`/admin/dashboard/seller/details/${seller.s_id}`}><span style={{ width: "18px", height: "18px", backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "3px", color: "var(--text)" }}><FaEye /></span></Link></div>

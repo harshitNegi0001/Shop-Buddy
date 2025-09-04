@@ -1,106 +1,27 @@
 :root{
-  --highlight:#cfcfcf;
-  --primary: blue;
-  --background: #ffffff;
-  --text:#212121;
-  --muted-text:#757575;
-  --price:#43A047;
   --font-family: 'Poppins';
-  --authBack : url("./assets/loginPageSideImg.png");
-  --sec-back:#e8e8e9;
-  --sec-btn:#ff9800;
-  --card-bg:#FFFFFF;
-  --mess-outer:rgb(101, 199, 145);
-  --chat-list-bg:#d9ffd9;
+  
 }
-
-@media(prefers-color-scheme: dark){
+@media(prefers-color-scheme:dark ){
   :root{
-    --highlight:#2c2c2c;
-    --primary:#90CAF9;
-    --background:black;
     --text:#E0E0E0;
-    --muted-text:#BDBDBD;
-    --price:#81c784;
-    --font-family: 'Poppins', sans-serif;
-    --authBack : url("./assets/darkLoginPageSideImg.png");
-    --sec-back:#252525;
-    --sec-btn:#FF5722;
-    --card-bg:#1E1E1E;
-    --mess-outer:#262d31;
-    --chat-list-bg:#1e241e;
+    --background:#1f1f1f;
+    --header:black;
   }
-  
-  
 }
-
+@media(prefers-color-scheme: light){
+  :root{
+    --text:#212121;
+    --background:#d6d6d6;
+    --header:white;
+  }
+}
 *{
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  
-}
-body{
-  background-color: var(--background);
-}
 
-#root{
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  background-color:var(--sec-back);
-}
-
-.scrollable{
-  overflow-y: auto;
-  scrollbar-width: none;
 }
 
 
-/* pagging css */
-.pages,
-.currPage {
-    color: var(--background);
-    font-size: 0.875rem;
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    cursor: pointer;
-}
 
-.pages {
-    background-color: var(--text);
-    width: 20px;
-    height: 20px;
-    
-}
-.pages:hover{
-    transition: all .5s;
-
-    background-color: var(--primary);
-    
-}
-
-.currPage {
-    background-color: var(--primary);
-    width: 23px;
-    height: 23px;
-}
-.prePage,.nextPage {
-  font-size: 20px;
-  width: 23px;
-  height: 23px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  list-style: none;
-}
-.prePage:hover,.nextPage:hover{
-    color: var(--primary);
-    font-size: 23px;
-}
