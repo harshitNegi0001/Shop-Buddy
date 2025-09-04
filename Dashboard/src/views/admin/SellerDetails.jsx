@@ -93,11 +93,11 @@ function SellerDetails(){
                 <div className="seller-address" >
                     <span style={{color:"black"}}>Address</span>
                     <div className='inner-seller-detail'>
-                        <span>Shop Name : {sellerDetails.shop_info||'not availible yet'}</span>
-                        <span>Country : India</span>
-                        <span>State : Uttarakhand</span>
-                        <span>District : Nainital</span>
-                        <span>Pincode : 263002</span>
+                        <span>Shop Name : {sellerDetails.shop_info?.shopName||'not availible yet'}</span>
+                        <span>Country : {sellerDetails.shop_info?.country||'not availible yet'}</span>
+                        <span>State : {sellerDetails.shop_info?.stateName||'not availible yet'}</span>
+                        <span>District : {sellerDetails.shop_info?.district||'not availible yet'}</span>
+                        <span>Pincode : {sellerDetails.shop_info?.postalCode||'not availible yet'}</span>
                     </div>
                 </div>
 
