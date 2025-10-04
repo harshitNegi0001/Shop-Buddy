@@ -1,0 +1,86 @@
+.seller-detail-container {
+  width: 90%;
+  box-sizing: border-box;
+  background-color: rgb(132, 203, 250);
+  margin: 40px 0px;
+  border-radius: 15px;
+  padding: 20px;
+  color: var(--text);
+}
+.loading{
+    width: 50px;
+    /* position: fixed;
+    left: 48vw;
+    top: 48vh; */
+}
+.load-back{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.151);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+.seller-detail {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+#seller-image {
+  width: 200px;
+  border-radius: 5px;
+}
+.seller-basic-info {
+  width: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.inner-seller-detail{
+    background-color: var(--card-bg);
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.seller-address {
+  width: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#active-status {
+  background: none;
+  text-align: center;
+  border-radius: 10px;
+  height: 30px;
+}
+.seller-submit-btn{
+    width: 130px;
+  margin-left: 10px;
+  height: 30px;
+  border: none;
+  background-color: var(--sec-btn);
+  border-radius: 10px;
+}
+.seller-submit-btn:hover{
+    background-color: #ff3c22;
+    transition: all 500ms;
+    transform: scale(0.95);
+}
+.seller-submit-btn:active{
+    transition: all 100ms;
+    transform: scale(0.9);
+}

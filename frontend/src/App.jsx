@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
-import Router from "./router/Router";
-import publicRoutes from './router/routes/publicRoutes'
-import { getRoutes } from "./router/routes/index.jsx";
+import { Route, Routes } from "react-router-dom";
+import { lazy } from "react";
+import Home from "./pages/Home";
 
-function App(){
-  const [allRoutes,setAllRoutes] = useState([...publicRoutes]);
-  useEffect(()=>{
-    const routes = getRoutes();
-    setAllRoutes([...allRoutes,routes]);
-  },[])
-  return <Router  allRoutes={allRoutes} />
+
+
+
+function App() {
+
+  return (
+    <div style={{ width: "100vw", height: "100vh", boxSizing: "border-box", backgroundColor: "var(--background)" }}>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+      </Routes>
+    </div>
+  )
 }
 
-
-export default App;
+export default App
