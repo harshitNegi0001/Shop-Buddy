@@ -4,7 +4,7 @@ export const getInfo = createAsyncThunk(
     'auth/getInfo',
     async (_, thunkAPI) => {
 
-        
+        const response = await fetch(process.env.BACKEND_PORT+'api/get-user')
     }
 )
 const authReducer = createSlice({
