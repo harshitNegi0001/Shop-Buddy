@@ -7,6 +7,10 @@
     --text:#E0E0E0;
     --background:#1f1f1f;
     --header:black;
+    --sec-back:#252525;
+    --primary:#90CAF9;
+    --authContainerBack:black;
+    --authBack : url("./assets/darkLoginPageSideImg.png");
   }
 }
 @media(prefers-color-scheme: light){
@@ -14,6 +18,11 @@
     --text:#212121;
     --background:#d6d6d6;
     --header:white;
+    --sec-back:#e8e8e9;
+    --authContainerBack:white;
+    --primary: blue;
+    
+  --authBack : url("./assets/loginPageSideImg.png");
   }
 }
 *{

@@ -9,7 +9,6 @@ function App() {
   useEffect(() => {
     const routes = getRoutes();
     setAllRoutes([...allRoutes, routes]);
-    // console.log(document.cookies.accessToken)
   }, [])
   return(
   <AuthState>
