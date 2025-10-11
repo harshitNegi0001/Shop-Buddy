@@ -7,7 +7,8 @@ import messageRouter from './routes/messages/messageRoutes.js';
 import cors from 'cors'; 
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-const app = express();
+import { app,server } from './utiles/io.js';
+
 const port = 5000;
 
 app.use(cors({
@@ -36,6 +37,6 @@ app.get('/set-test-cookie', (req, res) => {
   });
   res.json({ message: 'Test cookie sent' });
 });
-app.listen(port,()=>{
+server.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
 })

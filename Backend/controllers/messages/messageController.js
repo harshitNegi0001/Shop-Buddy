@@ -1,4 +1,4 @@
-import returnRes from "../../utiles/response";
+import returnRes from "../../utiles/response.js";
 
 class Messages {
     getSellerCustomer = async (req, res) => {

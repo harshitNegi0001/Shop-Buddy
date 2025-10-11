@@ -1,36 +1,55 @@
-:root{
+:root {
   --font-family: 'Poppins';
-  
+
 }
-@media(prefers-color-scheme:dark ){
-  :root{
-    --text:#E0E0E0;
-    --background:#1f1f1f;
-    --header:black;
-    --sec-back:#252525;
-    --primary:#90CAF9;
-    --authContainerBack:black;
-    --authBack : url("./assets/darkLoginPageSideImg.png");
+
+@media(prefers-color-scheme:dark) {
+  :root {
+    --btn:#ff5e00;
+    --toast-error:rgb(56, 27, 27);
+    --toast-success:rgb(39, 58, 39);
+    --highlight:#2c2c2c;
+    --text: #E0E0E0;
+    --background: #1f1f1f;
+    --header: black;
+    --sec-back: #252525;
+    --primary: #90CAF9;
+    --authContainerBack: black;
+    --authBack: url("./assets/darkLoginPageSideImg.png");
+    --sidebar: rgb(28, 32, 31);
+    --card-bg:#1E1E1E;
+    --chat-list-bg:#1e241e;
+    --mess-outer:#262d31;
   }
 }
-@media(prefers-color-scheme: light){
-  :root{
-    --text:#212121;
-    --background:#d6d6d6;
-    --header:white;
-    --sec-back:#e8e8e9;
-    --authContainerBack:white;
+
+@media(prefers-color-scheme: light) {
+  :root {
+    --card-bg:#FFFFFF;
+    --btn:#FF5722;
+    --toast-error:rgb(248, 201, 201);
+    --toast-success:rgb(200, 255, 200);
+    --highlight:#cfcfcf;
+    --text: #212121;
+    --background: #d6d6d6;
+    --header: white;
+    --sec-back: #e8e8e9;
+    --authContainerBack: white;
     --primary: blue;
-    
-  --authBack : url("./assets/loginPageSideImg.png");
+    --sidebar: rgb(207, 255, 247);
+--chat-list-bg:#d9ffd9;
+--mess-outer:rgb(101, 199, 145);
+
+    --authBack: url("./assets/loginPageSideImg.png");
   }
 }
-*{
+.scrollable{
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+* {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
 
 }
-
-
-
