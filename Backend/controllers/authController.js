@@ -67,6 +67,16 @@ class AuthController {
 
         return returnRes(res, 200, { userInfo: userDetail });
       }
+      else if (role === 'customer') {
+        const user = await db.query("SELECT id,name,image,address,email,phone_no FROM customers WHERE id =$1", [id]);
+        if (user.rows.length > 0) {
+          return returnRes(res, 200, { message: "Success", userId: user.rows[0].id, userInfo: user.rows[0], userRole: 'customer' })
+        }
+        else {
+          return returnRes(res, 400, { message: "Something went wrong" });
+
+        }
+      }
       else {
         return returnRes(res, 404, { userInfo: null, message: 'user not found' });
       }
@@ -168,7 +178,7 @@ class AuthController {
     const role = req.role;
     const form = formidable({});
     console.log(id);
-    
+
     cloudinary.config({
       cloud_name: process.env.cloud_name,
       api_key: process.env.api_key,
@@ -183,39 +193,116 @@ class AuthController {
         }
         else {
           const image = files.image?.[0];
-          try{
-            const result = await cloudinary.uploader.upload(image.filepath, { folder: 'profile'});
-            if(result){
-              const profileImg = await db.query("UPDATE seller_info SET s_image = $1 WHERE s_id = $2 RETURNING s_image",[result.secure_url,id]);
-              return returnRes(res,200,{message:"Success",image:profileImg.rows[0].s_image});
+          try {
+            const result = await cloudinary.uploader.upload(image.filepath, { folder: 'profile' });
+            if (result) {
+              const profileImg = await db.query("UPDATE seller_info SET s_image = $1 WHERE s_id = $2 RETURNING s_image", [result.secure_url, id]);
+              return returnRes(res, 200, { message: "Success", image: profileImg.rows[0].s_image });
             }
-            else{
-              return returnRes(res,400,{message:"Profile update failed"});
+            else {
+              return returnRes(res, 400, { message: "Profile update failed" });
             }
           }
-          catch(error){
-            return returnRes(res,500,{message:"Internal Server Error"});
+          catch (error) {
+            return returnRes(res, 500, { message: "Internal Server Error" });
           }
         }
       })
     }
-    else if (role==='admin'){
-      form.parse(req,async(err,fields,files)=>{
+    else if (role === 'admin') {
+      form.parse(req, async (err, fields, files) => {
         const image = files.image?.[0];
-        try{
-          const result = await cloudinary.uploader.upload(image.filepath, { folder: 'profile'});
-          if(result){
-            const profileImg = await db.query("UPDATE admins SET image = $1 WHERE id =  $2 RETURNING image",[result.secure_url,id]);
-            return returnRes(res,200,{message:"success", image:profileImg.rows[0].image});
+        try {
+          const result = await cloudinary.uploader.upload(image.filepath, { folder: 'profile' });
+          if (result) {
+            const profileImg = await db.query("UPDATE admins SET image = $1 WHERE id =  $2 RETURNING image", [result.secure_url, id]);
+            return returnRes(res, 200, { message: "success", image: profileImg.rows[0].image });
           }
-          else{
-            return returnRes(res,400,{message:"Profile update failed"});
+          else {
+            return returnRes(res, 400, { message: "Profile update failed" });
           }
         }
-        catch(error){
-          return returnRes(res,500,{message:"Internal Server Error"});
+        catch (error) {
+          return returnRes(res, 500, { message: "Internal Server Error" });
         }
       })
+    }
+  }
+  customerLogin = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await db.query("SELECT * FROM customers WHERE email=$1", [email]);
+      if (user.rows.length > 0) {
+
+        const check_pass = await bcrypt.compare(password, user.rows[0].password);
+        if (check_pass) {
+          const token = await createToken({
+            id: user.rows[0].id,
+            role: 'customer'
+          })
+          res.cookie('accessToken', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'Lax',
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          });
+          res.cookie('isAuth',true,{
+            httpOnly: false,
+            secure: false,
+            sameSite: 'Lax',
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          })
+          return returnRes(res, 200, { message: "Welcome back" ,token:token,userInfo:user.rows[0]});
+        }
+        else {
+          return returnRes(res, 400, { message: "Wrong Email or Password" });
+        }
+      }
+      else {
+        return returnRes(res, 400, { message: "Wrong Email or Password" });
+      }
+
+    } catch (err) {
+      return returnRes(res, 500, { message: "Internal Server Error" });
+    }
+  }
+  logout = async (req, res) => {
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      expires: new Date(0),
+    })
+    res.cookie('isAuth', false, {
+      httpOnly: false,
+      secure: false,
+      sameSite: 'Lax',
+      expires: new Date(0),
+    })
+    return returnRes(res,200,{message:"Successfully Logout"});
+  }
+
+  editCustomerInfo = async (req,res)=>{
+    const role = req.role;
+    
+    if(role==='customer'){
+      try {
+        const id = req.id;
+        const {editedDetail} = req.body;
+        const result = await db.query("UPDATE customers SET name = $1 , email= $2 , phone_no =$3, address =$4 WHERE id = $5 RETURNING *",[editedDetail.name,editedDetail.email,editedDetail.phone,editedDetail.address,id]);
+        if(result.rows.length>0){
+          return returnRes(res,200,{message:"Success",userInfo:result.rows[0]});
+        }
+        else{
+          return returnRes(res,404,{message:"Something went wrong"});
+        }
+      } catch (err) {
+        console.log(err)
+        return returnRes(res,500,{message:"Internal Server Error"});
+      }
+    }
+    else{
+      return returnRes(res,403,{message:"You are not allowed"});
     }
   }
 

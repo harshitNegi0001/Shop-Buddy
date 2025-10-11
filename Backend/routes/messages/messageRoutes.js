@@ -1,6 +1,6 @@
 import express from 'express';
-import Messages from '../../controllers/messages/messageController';
-import { authMiddleware } from '../../middlewares/authMiddleware';
+import Messages from '../../controllers/messages/messageController.js';
+import { authMiddleware } from '../../middlewares/authMiddleware.js';
 
 const router = express.Router();
 

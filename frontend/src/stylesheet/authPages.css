@@ -103,6 +103,7 @@
     top: 0px;
     font-size: 8px;
     padding: 2px;
+    
 
 }
 
@@ -201,7 +202,7 @@
     }
     .input-box:focus~.label,
     .input-box:valid~.label{
-        background-color: var(--background);
+         background-color: var(--sec-back);
     }
 }
 

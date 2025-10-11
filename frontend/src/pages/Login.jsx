@@ -1,20 +1,26 @@
 import '../stylesheet/authPages.css';
 import emailSvg from '../assets/email-svgrepo-com.svg';
 import keySvg from '../assets/key-svgrepo-com.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import loading from '../assets/loading3.webp';
 import { useActionState, useState } from 'react';
 import toast from 'react-hot-toast';
 import { jwtDecode } from "jwt-decode";
+import { useDispatch } from 'react-redux';
+import { login } from '../Store/reducer/authReducer';
 
 function Login() {
-    
+    const backendPort = import.meta.env.VITE_BACKEND_PORT;
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate()
+    // console.log(".env var",process.env.BACKEND_PORT)
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
 
         if (email && password) {
-            
+
             const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!checkEmail.test(email)) {
                 setErrMessage("Invalid Email Format");
@@ -23,7 +29,7 @@ function Login() {
             }
 
             try {
-                const response = await fetch('http://localhost:5000/api/customer-login', {
+                const response = await fetch(backendPort + '/api/customer-login', {
                     method: "POST",
                     headers: {
                         "content-type": "application/json"
@@ -36,23 +42,23 @@ function Login() {
                 });
                 const result = await response.json();
                 if (!response.ok) {
+                    console.log("wrong")
                     toast.error(result.message);
                 }
                 else {
+
                     toast.success(result.message);
                     const decodeToken = jwtDecode(result.token);
-                    // login(result.token, decodeToken.role, decodeToken.id);
-                    // navigate('/');
+                    dispatch(login({ userId: decodeToken.id, userRole: decodeToken.role, userInfo: result.userInfo }));
+                    navigate('/');
                 }
 
             }
             catch (err) {
-                setErrMessage(err.message);
                 toast.error(err.message);
             }
         }
         else {
-            setErrMessage("Please enter all inputs");
             return;
         }
 
@@ -61,7 +67,7 @@ function Login() {
     const [errMessage, setErrMessage] = useState('')
     return (
         <div className='auth-container'>
-            
+
             {pendding && <div className='load-back'>
                 <img className='loading' src={loading} alt='loading...' />
             </div>}

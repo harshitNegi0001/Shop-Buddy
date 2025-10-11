@@ -1,9 +1,7 @@
 import { lazy } from "react";
-import Login from "../../pages/Login";
 
-// const Login = lazy(() => import("../../views/auth/Login.jsx"));
+const Login = lazy(() => import("../../pages/Login"));
 // const Register = lazy(() => import("../../views/auth/Register.jsx"));
-// const AdminLogin = lazy(() => import("../../views/auth/admin.jsx"));
 // const Unauthorized = lazy(() => import("../../views/Unauthorized.jsx"));
 
 const publicRoutes = [
