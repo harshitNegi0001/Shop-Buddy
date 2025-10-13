@@ -14,12 +14,31 @@ const io = new Server(server, {
     }
 })
 
-io.on('connection',(socket)=>{
-    socket.on('join-room',(roomId)=>{
+io.on('connection', (socket) => {
+    socket.on('join-room', (roomId) => {
         socket.join(roomId);
     });
-    
-    socket.on('send-message',(msg)=>{
+
+    socket.on('send-message', (msg) => {
+        console.log(msg)
+        const seller_id = msg.seller_id;
+        const admin_id = msg.admin_id;
+        const customer_id = msg.customer_id;
+        if (seller_id) {
+            io.to(`seller${seller_id}`).emit('receive-msg',msg);
+            io.to(`seller${seller_id}`).emit('notify-app',(msg.sender))
+            console.log("sent to seller")
+        }
+        if (admin_id) {
+            io.to(`admin${admin_id}`).emit('receive-msg',msg);
+            io.to(`admin${admin_id}`).emit('notify-app',(msg.sender))
+             console.log("sent to admin")
+        }
+        if (customer_id) {
+            io.to(`customer${customer_id}`).emit('receive-msg',msg);
+            io.to(`customer${customer_id}`).emit('notify-app',(msg.sender));
+             console.log("sent to customer")
+        }
 
     })
 })

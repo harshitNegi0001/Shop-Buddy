@@ -6,36 +6,66 @@ import Router from "./router/Router";
 import publicRoutes from './router/routes/publicRoutes'
 import { getRoutes } from "./router/routes/index.jsx";
 import { getInfo } from "./Store/reducer/authReducer.js";
-
+import { socket } from "./utils/socket.js";
 
 
 function App() {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector(state => state.auth);
+  const { userId, userRole, isLoading } = useSelector(state => state.auth);
 
   const [allRoutes, setAllRoutes] = useState([...publicRoutes]);
   useEffect(() => {
     const routes = getRoutes();
     setAllRoutes([...allRoutes, routes]);
     dispatch(getInfo());
-  }, [])
+  }, []);
+  useEffect(() => {
+    if (userId) {
+      if (!socket.connected) {
+        socket.connect();
+      }
+
+      const joinRoom = () => {
+        console.log("Joining room:", `customer${userId}`);
+        socket.emit("join-room", `customer${userId}`);
+      };
+
+      if (socket.connected) {
+        joinRoom();
+      } else {
+        socket.once("connect", joinRoom);
+      }
+
+      socket.on("notify-app", (sender) => {
+        if (userRole !== sender) {
+          toast("You have a new message", { icon: "💬" });
+        }
+      });
+
+      return () => {
+        socket.off("notify-app");
+        socket.off("connect", joinRoom);
+      };
+    }
+
+  }, [userId])
   return (
     <div style={{ width: "100vw", height: "100vh", boxSizing: "border-box", backgroundColor: "var(--background)" }}>
       <Toaster
         toastOptions={{
           position: "top-right",
-          success:{
-            style:{
-              backgroundColor:"var(--toast-success)"
+          success: {
+            style: {
+              backgroundColor: "var(--toast-success)"
             }
           },
-          error:{
-            style:{
-              backgroundColor:"var(--toast-error)"
+          error: {
+            style: {
+              backgroundColor: "var(--toast-error)"
             }
           },
           style: {
-            
+
             backgroundColor: 'var(--toaster)',
             color: 'var(--text)'
           }

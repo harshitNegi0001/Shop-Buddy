@@ -1,16 +1,28 @@
 import '../stylesheet/sellerChat.css';
-import sellerImage from '../assets/sellerSamplePhoto.jpg';
 import { IoChevronBack } from "react-icons/io5";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { socket } from '../utils/socket';
+import { useSelector } from 'react-redux';
+
 
 function SellerChat() {
+    const { userId, userRole } = useSelector(state => state.auth);
     const { sellerId } = useParams();
+    const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
-    const [showChat, setShowChat] = useState(sellerId?true:false);
+    const [sendMsgData, setSendMsgData] = useState('');
+    const [chatList, setChatList] = useState([]);
+    const [sellerInfo, setSellerInfo] = useState({});
+    const [showChat, setShowChat] = useState(sellerId ? true : false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+    const Backend_port = import.meta.env.VITE_BACKEND_PORT;
+    useEffect(() => {
+        getChatList();
+    }, [])
+    
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -21,18 +33,120 @@ function SellerChat() {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+    useEffect(() => {
+        if (sellerId && chatList) {
+            setSellerInfo(chatList.find(s => s.id == sellerId))
 
+        }
+    }, [chatList, sellerId])
     useEffect(() => {
         (windowWidth < 601) ? setShowChat(false) : setShowChat(true);
     }, [windowWidth]);
 
     useEffect(() => {
-        
+
         if (sellerId) {
+
             setShowChat(true);
+            getMessages();
+            socket.on('receive-msg', (msgData) => {
+                
+                if (msgData.seller_id == sellerId) {
+
+                    setMessages((prev) => [ msgData,...prev])
+                }
+            })
+            return () => {
+                socket.off('receive-msg');
+            };
+
+
+
         }
     }, [sellerId]);
+    const getMessages = async () => {
+        try {
 
+
+            const response = await fetch(`${Backend_port}/api/msg/seller-costomer?sellerId=${sellerId}`, {
+                method: "GET",
+                credentials: "include"
+            }
+            )
+            const result = await response.json();
+
+            if (response.ok) {
+                setMessages(result.messages);
+
+            }
+            else {
+                toast.error("Error! " + result.message);
+            }
+        } catch (err) {
+            toast.error("Error! " + err.message);
+        }
+    }
+    const sendMessage = async (e) => {
+
+        e.preventDefault();
+        if (sendMsgData) {
+            setSendMsgData('');
+            try {
+                const msg = {
+                    sender:'customer',
+                    seller_id:sellerId,
+                    customer_id:userId,
+                    msg:sendMsgData
+                }
+                socket.emit('send-message',(msg))
+                const response = await fetch(`${Backend_port}/api/msg/send-seller-customer`, {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        msgData: sendMsgData,
+                        sellerId: sellerId
+                    }),
+                    credentials: "include"
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    toast.success("Sent");
+                    getChatList();
+                }
+                else {
+                    toast.error("Error! " + result.message);
+
+                }
+            }
+            catch (err) {
+                toast.error("Error! " + err.message);
+            }
+        }
+
+    }
+    const getChatList = async () => {
+        try {
+            const response = await fetch(`${Backend_port}/api/msg/get-chatlist?required=sellers`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setChatList(result.chatList);
+
+            }
+            else {
+                toast.error("Error! " + result.message);
+            }
+        } catch (err) {
+
+            toast.error("Error! " + err.message);
+        }
+    }
     const handleSellerClick = (id) => {
         navigate(`/seller-chat/${id}`);
     };
@@ -41,27 +155,19 @@ function SellerChat() {
         <div className="liveChat-container">
             {/* Seller List */}
             <div
-                className="chat-seller-list"
-                style={{ display: `${(showChat&&sellerId && windowWidth < 601) ? 'none' : 'flex'}` }}
+                className="chat-seller-list scrollable"
+                style={{ display: `${(showChat && sellerId && windowWidth < 601) ? 'none' : 'flex'}` }}
             >
                 <div><span style={{ marginBottom: "20px" }}>Sellers list</span></div>
 
-                <div onClick={() => handleSellerClick("yogesh")} className='chat-sel'>
+                {chatList.map((s, i) => <div key={i} onClick={() => handleSellerClick(s.id)} className='chat-sel'>
                     <div className="seller-img--sm">
-                        <img src={sellerImage} alt="seller_img" />
+                        <img src={s.image} alt="seller_img" />
                     </div>
-                    <div style={{ paddingBottom: "10px" }}>Yogesh Jani</div>
-                </div>
+                    <div style={{ paddingBottom: "10px" }}>{s.name}</div>
+                </div>)}
 
-                <div onClick={() => handleSellerClick("piyush")} className='chat-sel'>
-                    <div className="seller-img--sm"><img src={sellerImage} alt="seller_img" /></div>
-                    <div style={{ paddingBottom: "10px" }}>Piyush Negi</div>
-                </div>
 
-                <div onClick={() => handleSellerClick("ayush")} className='chat-sel'>
-                    <div className="seller-img--sm"><img src={sellerImage} alt="seller_img" /></div>
-                    <div style={{ paddingBottom: "10px" }}>Ayush Singh</div>
-                </div>
             </div>
 
             {/* Chat Box */}
@@ -71,16 +177,23 @@ function SellerChat() {
                         <div className='close-chat' onClick={() => navigate(`/seller-chat`)}>
                             <IoChevronBack />
                         </div>
-                        <div className="seller-img--sm"><img src={sellerImage} alt="seller_img" /></div>
-                        <div className="seller-name">{sellerId}</div>
+                        <div className="seller-img--sm"><img src={sellerInfo?.image} alt="seller_img" /></div>
+                        <div className="seller-name">{sellerInfo?.name}</div>
                     </div>
                     <div className="chat-main">
-                        <div className='recieved-msg'><span className='left-msg'>{`Hello Admin,\nI need help.`}</span></div>
-                        <div className='sent-msg'><span className='right-msg'>{'Hi,\nsure I will help you'}</span></div>
+                        {
+                            messages.map((m, i) => <div key={i}>
+                                <div className={`${(m.sender === 'seller') ? 'recieved-msg' : 'sent-msg'}`}><span className={`${(m.sender === 'seller') ? 'left-msg' : 'right-msg'}`}>{m.msg}</span></div>
+
+                            </div>)
+                        }
+
                     </div>
                     <div className='write-msg-container'>
-                        <div className="msg-input"><input placeholder='Enter message' type='text' /></div>
-                        <div className="send-msg"><RiSendPlaneFill /></div>
+                        <form style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }} onSubmit={(e) => sendMessage(e)}>
+                            <div className="msg-input"><input placeholder='Enter message' type='text' value={sendMsgData} onChange={(e) => setSendMsgData(e.target.value)} /></div>
+                            <button type='submit' onClick={(e) => sendMessage(e)} className={`${sendMsgData ? "send-msg" : "empty-send-msg"}`}><RiSendPlaneFill /></button>
+                        </form>
                     </div>
                 </div>
             )}

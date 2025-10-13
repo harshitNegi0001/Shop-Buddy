@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { socket } from '../../utils/socket';
+
 const backendPort = import.meta.env.VITE_BACKEND_PORT;
 export const getInfo = createAsyncThunk(
     'auth/getInfo',
     async (_, thunkAPI) => {
         const isAuth = Cookies.get('isAuth')
-        
+
         if (isAuth) {
 
 
@@ -43,12 +45,12 @@ export const getInfo = createAsyncThunk(
                 })
             }
         }
-        else{
+        else {
             return thunkAPI.rejectWithValue({
-                    userId: null,
-                    userRole: null,
-                    isLoading: false
-                })
+                userId: null,
+                userRole: null,
+                isLoading: false
+            })
         }
 
     }
@@ -68,6 +70,7 @@ const authReducer = createSlice({
                 state.userInfo = action.payload.userInfo,
                 state.userRole = action.payload.userRole,
                 state.isLoading = false
+            socket.connect();
         },
         setState: (state, action) => {
             state.userId = action.payload.userId ?? state.userId,
@@ -81,6 +84,7 @@ const authReducer = createSlice({
                 state.userInfo = null,
                 state.userRole = null,
                 state.isLoading = false
+            socket.disconnect();
         }
     },
     extraReducers: (builder) => {
@@ -93,6 +97,8 @@ const authReducer = createSlice({
                     state.userInfo = action.payload.userInfo,
                     state.userRole = 'customer',
                     state.isLoading = false
+
+                socket.connect();
             })
             .addCase(getInfo.rejected, (state) => {
                 state.isLoading = false,
