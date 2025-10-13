@@ -25,7 +25,7 @@ function MainLayout() {
 
 
             <div className="scrollable main-right" style={{ position:"relative", width: "100%", height: "100%", boxSizing: "border-box"}}  >
-                <div className="header-con" style={{ position: "sticky", top: "0px", left: "0px", width: "100%" }}>
+                <div className="header-con" style={{ position: "sticky",zIndex:'99', top: "0px", left: "0px", width: "100%" }}>
                     <Header setSidebar={setSidebar} setUserProf={setUserProf} />
                 </div>
 
