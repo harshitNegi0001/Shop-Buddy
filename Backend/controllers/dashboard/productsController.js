@@ -55,7 +55,7 @@ class Product {
 
     getProducts = async (req, res) => {
         const { searchValue, parPage, currPage, discount, sellerId } = req.query;
-
+console.log("useerEnterd")
         try {
             const searchItem = searchValue ? `%${searchValue}%` : '%';
             if (discount) {
@@ -63,23 +63,17 @@ class Product {
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($4::int IS NULL OR seller_id = $4::int) )ORDER BY id DESC OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
 
-                if (result.rows.length > 0) {
-                    return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
-                }
-                else {
-                    return returnRes(res, 404, { message: "No record found" });
-                }
+
+                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
+
             }
             else {
 
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($4::int IS NULL OR seller_id = $4::int)) ORDER BY id DESC  OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
-                if (result.rows.length > 0) {
-                    return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
-                }
-                else {
-                    return returnRes(res, 404, { message: "No record found" })
-                }
+
+                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
+
             }
         }
         catch (err) {
@@ -157,6 +151,15 @@ class Product {
                 }
             }
         });
+    }
+    getOfferHighlight = async (req, res) => {
+        try {
+            const result = await db.query("SELECT * FROM offer_highlight ORDER BY id DESC LIMIT 4 ");
+            return returnRes(res, 200, { message: "Success", highlight: result.rows });
+        } catch (err) {
+            // console.log(err);
+            return returnRes(res, 500, { message: "Internal Server Error" });
+        }
     }
 }
 

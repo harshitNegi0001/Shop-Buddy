@@ -20,11 +20,13 @@
     --card-bg:#1E1E1E;
     --chat-list-bg:#1e241e;
     --mess-outer:#262d31;
+    --offers-main:rgb(18, 52, 56);
   }
 }
 
 @media(prefers-color-scheme: light) {
   :root {
+    --offers-main:rgb(177, 233, 233);
     --card-bg:#FFFFFF;
     --btn:#FF5722;
     --toast-error:rgb(248, 201, 201);

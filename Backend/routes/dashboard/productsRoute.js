@@ -10,4 +10,6 @@ router.get('/get-products',Product.getProducts);
 router.get('/get-product-detail',Product.getProductDetail);
 router.post('/edit-product',authMiddleware,Product.editProduct);
 
+router.get('/get-offer-highlight',Product.getOfferHighlight)
+
 export default router;
