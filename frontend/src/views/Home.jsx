@@ -5,29 +5,35 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 
 
 function Home() {
     const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
     const [products, setProducts] = useState([]);
+    const [ratings,setRatings] = useState([]);
     const [hasmore, setHasmore] = useState(true);
+    const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const searchValue = '';
-    useEffect(()=>{
+    useEffect(() => {
         getProducts();
-    },[])
+    }, [])
 
     const getProducts = async () => {
         try {
-            const response = await fetch(`${BACKEND_PORT}/api/get-products?searchValue=${searchValue}&&parPage=${2}&&currPage=${page}`);
+            const response = await fetch(`${BACKEND_PORT}/api/get-products?searchValue=${searchValue}&parPage=${10}&currPage=${page}`);
             const result = await response.json();
 
             if (response.ok) {
                 if (result.products.length === 0) {
+                    
                     setHasmore(false);
                     return;
                 }
-                setProducts([...products, ...result.products]);
+                setRatings((prev)=>[...prev,...result.ratings]);
+                setProducts((prev)=>[...prev, ...result.products]);
                 setPage((prev) => prev + 1);
             }
             else {
@@ -38,31 +44,37 @@ function Home() {
         }
     }
     return (
-        <div style={{ width: "100%", height: "fit-content", boxSizing: "border-box", overflowY: "scroll", scrollbarWidth: "none" }}>
-            {/* <Offers/>
-            <Trendz/> */}
+        <div id="scrollTarget"  style={{ width: "100%",height:"100vh", boxSizing: "border-box" , overflowY:"scroll" ,scrollbarWidth:"none"}}>
+            <Offers/>
+            <Trendz/>
 
 
-            <div className="product-container" style={{ width: "100%", boxSizing: "border-box", padding: "20px", display: "grid", placeItems: "center", gap: "20px 10px" }}>
-                <InfiniteScroll
-                    dataLength={products.length} 
-                    next={getProducts}
-                    hasMore={hasmore} 
-                    loader={<h4>Loading...</h4>} 
-                    endMessage={<p style={{ textAlign: "center" }}> Page End (ಥ﹏ಥ) No more products left...
-</p>}
-                >
-                    {products.map((p,i) =>
-                        <div key={i} className="card-div" >
-                            <img src="https://res.cloudinary.com/dns5lxuvy/image/upload/v1756309188/x7dim13cze41ir7kgf8b.jpg" alt="" />
-                            <span className="prod-card-name" >Assus Vivobook</span>
-                            <div><span className="card-new-price" >$400</span> <span className="card-old-price" >$599</span> <span className="card-discount" >10% off</span></div>
+
+            <InfiniteScroll
+            style={{width:"100%"}}
+                dataLength={products.length}
+                next={getProducts}
+                hasMore={hasmore}
+                loader={<h4>Loading...</h4>}
+                endMessage={<p style={{ textAlign: "center",fontSize:"10px",color:"var(--text)" }}> Page End (ಥ﹏ಥ) No more products left...
+                </p>
+                }
+                scrollableTarget="scrollTarget"
+            >
+                <div className="product-container" style={{ width: "100%", boxSizing: "border-box", padding: "20px", display: "grid", placeItems: "center", gap: "20px 10px" }}>
+                    {products.map((p, i) =>
+                        <div key={i} className="card-div" onClick={()=>navigate(`/product-detail/${p.id}`)}>
+                            <img src={p.images[0]} alt="" />
+                            <span className="prod-card-name" >{p.name}</span>
+                            <div><span className="card-new-price" >₹{p.price-(p.price*p.discount/100)}</span> {p.discount>0?<span className="card-old-price" >₹{p.price}</span>:null} {p.discount>0?<span className="card-discount" >{p.discount}% off</span>:null}</div>
                             <div style={{ color: "var(--text)", fontSize: "12px" }}>free delivery</div>
-                            <div className="card-rating-div" ><span className="prod-rating" >4.9 <FaStar /></span><span className="card-reviwes">(100 Reviews)</span></div>
+                            <div className="card-rating-div" ><span className="prod-rating" >{ratings?.[i].avgRating} <FaStar /></span><span className="card-reviwes">({ratings?.[i].totalReview} Reviews)</span></div>
                         </div>
                     )}
-                </InfiniteScroll>
-            </div>
+                </div>
+            </InfiniteScroll> 
+            {/* <Products/> */}
+
         </div>
     )
 }

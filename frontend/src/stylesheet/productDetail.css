@@ -1,0 +1,384 @@
+.prod-detail-cont {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh;
+    
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.image-container {
+
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.cart-buy-btns {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.add-to-cart,
+.buy-now-button {
+    width: 45%;
+    height: 35px;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+}
+
+.add-to-cart {
+    border: 1px solid var(--primary);
+    background: none;
+    color: var(--primary);
+}
+
+.buy-now-button {
+    border: none;
+    background-color: var(--primary);
+    color: black;
+}
+
+.selected-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.img-option {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+
+}
+
+.card-old-price {
+    color: var(--text);
+
+    text-decoration: line-through;
+}
+
+.active-img,
+.all-img {
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
+    object-fit: cover;
+    background-color: white;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.active-img {
+    border: 2px solid var(--primary);
+}
+
+.prod-other-info-container {
+
+    background-color: var(--header);
+    border-radius: 15px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.prod-basic-info {
+    width: 100%;
+    color: var(--muted-text);
+    box-sizing: border-box;
+    border: 2px solid var(--highlight);
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-rating-div {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.prod-rating {
+    color: var(--text);
+    padding: 1px 4px;
+
+    background-color: green;
+    border-radius: 15px;
+
+    font-weight: 600;
+}
+
+.card-discount {
+    color: green;
+
+}
+
+.card-reviwes {
+    color: var(--text);
+    font-size: 10px;
+}
+
+.prod-full-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 2px solid var(--highlight);
+    border-radius: 15px;
+    box-sizing: border-box;
+    padding: 10px;
+    color: var(--muted-text);
+}
+
+.prod-seller-shop,
+.prod-rating-cont {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 2px solid var(--highlight);
+    border-radius: 15px;
+    box-sizing: border-box;
+    padding: 10px;
+    gap: 10px;
+
+}
+
+.prod-shop-info {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    color: var(--text);
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.prod-shop-info button {
+    width: 150px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    color: var(--primary);
+    background: none;
+}
+
+.similar-prod-box {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 30px;
+}
+
+.card-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    aspect-ratio: 3/5;
+    width: 100%;
+    /* width controlled by grid */
+    max-width: 280px;
+    /* optional max width */
+    overflow: hidden;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding-bottom: 5px;
+}
+
+.card-div:hover {
+    border: 2px solid var(--highlight);
+}
+
+.card-div img {
+    width: 100%;
+    border-radius: 10px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background-color: white;
+}
+
+.prod-card-name {
+    color: var(--text);
+    text-align: center;
+
+    /* Important part: width doesn't change card width */
+    width: 100%;
+    display: block;
+
+    /* Truncate text without affecting card width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    box-sizing: border-box;
+}
+
+.card-new-price {
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+@media (max-width:750px) {
+    
+.prod-rating {
+
+    font-size: 12px;
+  }
+    .card-old-price,
+    .card-discount {
+
+        font-size: 10px;
+    }
+
+    .image-container {
+        width: 100%;
+    }
+
+    .prod-other-info-container {
+        width: 100%;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .prod-card-name {
+        font-size: 14px;
+    }
+
+    .card-new-price {
+
+        font-size: 14px;
+
+    }
+}
+
+@media (min-width:751px) {
+    .prod-detail-cont {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .card-old-price,
+    .card-discount {
+
+        font-size: 12px;
+    }
+.prod-rating {
+
+    font-size: 14px;
+  }
+    .prod-card-name {
+
+        font-size: 16px;
+
+    }
+
+    .image-container {
+        width: 45%;
+    }
+
+    .card-new-price {
+
+        font-size: 16px;
+
+    }
+
+    .prod-other-info-container {
+        width: 50%;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card-div {
+        gap: 5px;
+    }
+
+}
+
+
+@media (min-width: 1024px) {
+    .product-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .prod-card-name {
+
+        font-size: 20px;
+
+    }
+.prod-rating {
+
+    font-size: 18px;
+  }
+    .card-old-price,
+    .card-discount {
+
+        font-size: 16px;
+    }
+
+    .card-div {
+        gap: 10px;
+    }
+
+    .card-new-price {
+
+        font-size: 22px;
+
+    }
+}
+
+@media (min-width: 1440px) {
+    .product-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .prod-card-name {
+
+        font-size: 24px;
+
+    }
+
+    .card-old-price,
+    .card-discount {
+
+        font-size: 18px;
+    }
+    .prod-rating {
+
+    font-size: 28px;
+  }
+
+    .card-div {
+        gap: 10px;
+    }
+
+    .card-new-price {
+
+        font-size: 26px;
+
+    }
+}

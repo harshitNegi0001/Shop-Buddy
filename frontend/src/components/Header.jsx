@@ -27,7 +27,7 @@ function Header({setSidebar,setUserProf}) {
 
             </div>
             <div className="acc-cart" style={{ fontSize: "30px", display: "flex", gap: "15px" }}>
-                <IoMdCart />
+                <IoMdCart onClick={()=>(userInfo)?navigate('/myCart'):navigate('/login')} />
                 
                 {(userInfo?.image)?<img onClick={()=>setUserProf(true)} src={userInfo.image} style={{width:"30px",height:"30px",borderRadius:"15px",objectFit:"cover",objectPosition:"center"}} alt=""  />:<MdAccountCircle onClick={()=>navigate('/login')}/>}
             </div>
