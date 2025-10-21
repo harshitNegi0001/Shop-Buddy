@@ -6,6 +6,7 @@
 @media(prefers-color-scheme:dark) {
   :root {
     --btn:#ff5e00;
+    --muted-text:rgb(170, 168, 168);
     --toast-error:rgb(56, 27, 27);
     --toast-success:rgb(39, 58, 39);
     --highlight:#2c2c2c;
@@ -13,7 +14,7 @@
     --background: #1f1f1f;
     --header: black;
     --sec-back: #252525;
-    --primary: #90CAF9;
+    --primary: rgb(144, 202, 249);
     --authContainerBack: black;
     --authBack: url("./assets/darkLoginPageSideImg.png");
     --sidebar: rgb(28, 32, 31);
@@ -27,6 +28,7 @@
 @media(prefers-color-scheme: light) {
   :root {
     --offers-main:rgb(177, 233, 233);
+    --muted-text:rgb(34, 34, 34);
     --card-bg:#FFFFFF;
     --btn:#FF5722;
     --toast-error:rgb(248, 201, 201);

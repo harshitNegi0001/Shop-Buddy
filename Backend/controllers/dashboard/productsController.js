@@ -2,6 +2,7 @@ import formidable from "formidable";
 import cloudinary from "cloudinary";
 import db from '../../utiles/db.js';
 import returnRes from '../../utiles/response.js';
+import calculateRating from "../../utiles/calculateRatings.js";
 
 class Product {
     addProduct = async (req, res) => {
@@ -54,17 +55,21 @@ class Product {
     }
 
     getProducts = async (req, res) => {
-        const { searchValue, parPage, currPage, discount, sellerId } = req.query;
-console.log("useerEnterd")
+        let { searchValue, parPage, currPage, discount, sellerId } = req.query;
+
         try {
+
             const searchItem = searchValue ? `%${searchValue}%` : '%';
+            parPage = parseInt(parPage)
+            currPage = parseInt(currPage)
+            sellerId = sellerId ? parseInt(sellerId) : null;
             if (discount) {
 
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($4::int IS NULL OR seller_id = $4::int) )ORDER BY id DESC OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
+                const prodRatings = result.rows.map(p => calculateRating(p.comments));
 
-
-                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
+                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
             }
             else {
@@ -72,7 +77,8 @@ console.log("useerEnterd")
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($4::int IS NULL OR seller_id = $4::int)) ORDER BY id DESC  OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
 
-                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount });
+                const prodRatings = result.rows.map(p => calculateRating(p.comments));
+                return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
             }
         }
@@ -81,21 +87,75 @@ console.log("useerEnterd")
             return returnRes(res, 500, { message: "Internal Server Error" });
         }
     }
+    addToCart = async (req, res) => {
+        const role = req.role;
+        if (role === 'customer') {
+            const id = req.id;
+            const { prodId } = req.body;
 
+            try {
+                const isAlready = await db.query('SELECT * FROM add_to_cart WHERE customer_id =$1 AND product_id = $2', [id, prodId]);
+                if (isAlready.rows.length == 0) {
+                    await db.query('INSERT INTO add_to_cart (product_id,customer_id) values ($1,$2)', [prodId, id])
+                }
+                return  returnRes(res,200,{message:"Success"});
+
+            } catch (err) {
+                console.log(err);
+                return returnRes(res, 500, { message: "Internal Server Error" });
+            }
+        }
+        else {
+            return returnRes(res, 403, { message: "You are not allowed to access." })
+        }
+    }
     getProductDetail = async (req, res) => {
         const { productId } = req.query;
         try {
             const result = await db.query("SELECT * FROM product_detail WHERE id = $1", [productId]);
+            const ratingObj = calculateRating(result.rows[0].comments)
             if (result.rows.length > 0) {
-                return returnRes(res, 200, { message: "successful", prodDetail: result.rows[0] });
+                return returnRes(res, 200, { message: "successful", prodDetail: result.rows[0], rating: ratingObj });
             }
             else {
                 return returnRes(res, 400, { message: "No Product found" });
             }
         }
         catch (err) {
+            console.log(err)
             return returnRes(res, 500, { message: "Internal Server Error" });
         }
+    }
+    rateProd = async(req,res)=>{
+        const role = req.role;
+        // if(role==='customer'){
+        const id = 1;
+            const {prodId , comment} = req.body;
+            try {
+                
+                const oldCom = await db.query('SELECT comments FROM products WHERE id = $1',[prodId]);
+
+                const isAlready = oldCom.rows[0].comments.find(i=>i.customer_id==id)
+                if(!isAlready){
+                    const updatedCom = [...oldCom.rows[0].comments,comment];
+                    await db.query("UPDATE products SET comments = $1 WHERE id = $2",[updatedCom,prodId]);
+                }
+                else{
+                    const filteredCom = oldCom.rows[0].comments.filter(c=>c.customer_id!=id);
+                    const updatedCom = [...filteredCom,comment];
+                    await db.query("UPDATE products SET comments = $1 WHERE id = $2",[updatedCom,prodId]);
+                }
+                
+
+                return returnRes(res,200,{message:"Success"});
+            } catch (err) {
+                console.log(err);
+                return returnRes(res,500,{message:"Internal Server Error"});
+            }
+        // }
+        // else{
+        //     return returnRes(res,403,{message:"You are not allowed to access"});
+        // }
     }
     editProduct = async (req, res) => {
         const form = formidable({});
@@ -159,6 +219,23 @@ console.log("useerEnterd")
         } catch (err) {
             // console.log(err);
             return returnRes(res, 500, { message: "Internal Server Error" });
+        }
+    }
+
+    getMyCart = async(req,res)=>{
+        const role = req.role;
+        if(role==='customer'){
+            const id = req.id;
+            try {
+                const cartProd = await db.query('SELECT * FROM add_to_cart WHERE customer_id = $1 ORDER BY id DESC',[id]);
+                return returnRes(res,200,{message:"Success",cartProd:cartProd.rows});
+            } catch (err) {
+                // console.log(err);
+                return returnRes(res, 500, { message: "Internal Server Error" });
+            }
+        }
+        else{
+            return returnRes(res,403,{message:"You are not allowed to access"});
         }
     }
 }

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { reset, setState } from '../Store/reducer/authReducer.js';
+import { getInfo, reset, setState } from '../Store/reducer/authReducer.js';
 import toast from 'react-hot-toast';
 import { MdModeEdit } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
@@ -35,14 +35,14 @@ function UserProfile({ setUserProf }) {
             dispatch(setState({isLoading:false}))
             if (response.ok) {
                 dispatch(reset());
-                setEditdetail(false)
+                
             }
             else {
                 toast.error("Error! " + result.message);
             }
 
         } catch (err) {
-            dispatch(setState({isLoading:false}))
+            dispatch(setState({isLoading:false}));
             toast.error("Error! " + err.message);
         }
 
@@ -66,6 +66,9 @@ function UserProfile({ setUserProf }) {
 
             if(response.ok){
                 toast.success("Info saved");
+                
+                setEditdetail(false);
+                dispatch(setState({userInfo:result.userInfo}));
             }
         }
         catch(err){

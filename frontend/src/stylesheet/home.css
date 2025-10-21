@@ -4,14 +4,34 @@
 
 /*  */
 
+.card-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  aspect-ratio: 3/5;
+  width: 100%;  /* width controlled by grid */
+  max-width: 280px; /* optional max width */
+  overflow: hidden;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding-bottom: 5px;
+}
+
 .prod-card-name {
   color: var(--text);
-
-  white-space: nowrap;
-  width: 100%;
   text-align: center;
+  
+  /* Important part: width doesn't change card width */
+  width: 100%; 
+  display: block;
+
+  /* Truncate text without affecting card width */
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
 .card-new-price {
@@ -51,9 +71,12 @@
   color: var(--text);
   font-size: 10px;
 }
+.card-div:hover{
+  border: 2px solid var(--highlight);
+}
 
 /*  */
-.card-div {
+/* .card-div {
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -61,7 +84,7 @@
   max-width: 280px;
   aspect-ratio: 3 / 5;
   color: var(--text);
-}
+} */
 
 .card-div img {
   width: 100%;
