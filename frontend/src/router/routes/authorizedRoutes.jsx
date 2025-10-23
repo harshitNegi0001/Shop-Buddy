@@ -6,6 +6,7 @@ const SellerChat = lazy(() => import("../../views/SellerChat.jsx"));
 const OrdersDetail = lazy(() => import("../../views/OrdersDetail.jsx"));
 const ProductDetail = lazy(() => import("../../views/ProductDetail.jsx"));
 const MyCart = lazy(() => import("../../views/MyCart.jsx"));
+const BuyProduct = lazy(() => import("../../views/BuyProduct.jsx"));
 
 
 export const authorizedRoutes=[
@@ -41,6 +42,11 @@ export const authorizedRoutes=[
     {
         path:'/myCart',
         element:<MyCart/>,
+        status:'authorized'
+    },
+    {
+        path:'/buy-products',
+        element:<BuyProduct/>,
         status:'authorized'
     }
 ]

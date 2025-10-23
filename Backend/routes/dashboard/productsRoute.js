@@ -14,5 +14,6 @@ router.post('/rate-prod',Product.rateProd)
 router.get('/get-offer-highlight',Product.getOfferHighlight)
 router.post('/add-to-cart',authMiddleware,Product.addToCart);
 router.get('/get-cart-prod',authMiddleware,Product.getMyCart);
+router.post('/delete-from-myCart',authMiddleware,Product.deleteFromCart)
 
 export default router;

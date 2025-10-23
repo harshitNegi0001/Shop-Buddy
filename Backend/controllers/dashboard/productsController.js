@@ -227,7 +227,7 @@ class Product {
         if(role==='customer'){
             const id = req.id;
             try {
-                const cartProd = await db.query('SELECT * FROM add_to_cart WHERE customer_id = $1 ORDER BY id DESC',[id]);
+                const cartProd = await db.query('SELECT c.id as cart_id,p.* FROM add_to_cart AS c JOIN products AS p ON p.id = c.product_id WHERE customer_id = $1 ORDER BY cart_id DESC',[id]);
                 return returnRes(res,200,{message:"Success",cartProd:cartProd.rows});
             } catch (err) {
                 // console.log(err);
@@ -236,6 +236,25 @@ class Product {
         }
         else{
             return returnRes(res,403,{message:"You are not allowed to access"});
+        }
+    }
+    deleteFromCart =async(req,res)=>{
+        const role = req.role;
+        if(role==='customer'){
+            const  id = req.id;
+
+            try {
+                const {cart_id} = req.body;
+                await db.query("DELETE FROM add_to_cart WHERE id =$1",[cart_id]);
+                return returnRes(res,200,{message:"Success"});
+                
+            } catch (err) {
+                // console.log(err);
+                return returnRes(res,500,{message:"Internal server error"});
+            }
+        }
+        else{
+            return returnRes(res,403,{message:"You are not allowed"});
         }
     }
 }
