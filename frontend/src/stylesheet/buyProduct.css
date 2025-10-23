@@ -1,0 +1,150 @@
+.buy-prod-page {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    /* border: 1px solid red; */
+}
+
+.delivery-container {
+    box-sizing: border-box;
+    padding: 10px;
+    
+    height: fit-content;
+    /* max-width: 350px; */
+    /* border: 1px solid green; */
+    border-radius: 15px;
+    background-color: var(--header);
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+    gap: 10px;
+}
+
+.del-method {
+    display: flex;
+
+    justify-content: space-around;
+}
+
+.active,
+.deactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    max-width: 250px;
+    height: 35px;
+    gap: 8px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.active {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.deactive {
+    border: 2px solid var(--muted-text);
+    color: var(--muted-text);
+}
+
+.cust-full-name,
+.cust-full-email,
+.cust-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.address-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-evenly;
+    margin-top: 15px;
+}
+
+.address-home-no,
+.address-city,
+.address-pincode,
+.address-district,
+.address-state {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    max-width: 150px;
+}
+
+.read-terms {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.delivery-container input {
+    background: none;
+    border: 2px solid var(--text);
+    border-radius: 10px;
+    height: 30px;
+    max-width: 350px;
+    outline-color: var(--primary);
+    color: var(--text);
+    padding: 0px 5px;
+}
+
+.payment-container {
+    box-sizing: border-box;
+    padding: 10px;
+    /* border: 1px solid green; */
+    background-color: var(--header);
+    border-radius: 15px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+    gap: 10px;
+}
+.display-cart-prod{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 250px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    border: 1px solid red;
+}
+
+@media (max-width:750px) {
+    .buy-prod-page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-container {
+        width: 100%;
+    }
+
+    .delivery-container {
+        width: 100%;
+    }
+}
+
+@media (min-width:751px) {
+    .buy-prod-page {
+        display: flex;
+        gap: 5px;
+        justify-content: space-evenly;
+    }
+
+    .payment-container {
+        width: 45%;
+    }
+
+    .delivery-container {
+        width: 45%;
+    }
+}
