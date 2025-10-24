@@ -46,7 +46,7 @@
 .buy-now-button {
     border: none;
     background-color: var(--primary);
-    color: black;
+    color: var(--background);
 }
 
 .selected-image {

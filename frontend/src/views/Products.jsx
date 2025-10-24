@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import loading from '../assets/loading3.webp'
 
 function Products(){
@@ -13,13 +13,13 @@ function Products(){
     const [hasmore, setHasmore] = useState(true);
     const navigate = useNavigate()
     const [page, setPage] = useState(1);
-    const searchValue = '';
+    const {searchValue} = useParams();
     useEffect(() => {
         getProducts();
-    }, [])
+    }, [searchValue]);
     const getProducts = async () => {
         try {
-            const response = await fetch(`${BACKEND_PORT}/api/get-products?searchValue=${searchValue}&parPage=${10}&currPage=${page}`);
+            const response = await fetch(`${BACKEND_PORT}/api/get-products?searchValue=${(searchValue)?searchValue:''}&parPage=${10}&currPage=${page}`);
             const result = await response.json();
 
             if (response.ok) {
@@ -28,6 +28,9 @@ function Products(){
                     
                     setHasmore(false);
                     return;
+                }
+                if(result.products.length<10){
+                    setHasmore(false);
                 }
                 setProducts((prev)=>[...prev, ...result.products]);
                 setPage((prev) => prev + 1);

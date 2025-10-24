@@ -6,10 +6,16 @@ import { IoSearchSharp } from "react-icons/io5";
 import { FiMenu } from "react-icons/fi";
 import appLogo from '../assets/sidebar-shopBuddyLogo.png';
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 function Header({setSidebar,setUserProf}) {
     const navigate = useNavigate()
     const {userInfo} = useSelector(state=>state.auth);
+    const [searchValue,setSearchValue] = useState('');
+
+    const searchProd = ()=>{
+        navigate(`/products/${searchValue}`);
+    }
     return (
 
 
@@ -21,8 +27,8 @@ function Header({setSidebar,setUserProf}) {
 
             <div className="searchbar">
 
-                <input type="text" placeholder='Search products'/>
-                <button><IoSearchSharp /></button>
+                <input type="text" value={searchValue} onChange={(e)=>setSearchValue(e.target.value)} placeholder='Search products'/>
+                <button onClick={()=>searchProd()}><IoSearchSharp /></button>
 
 
             </div>
