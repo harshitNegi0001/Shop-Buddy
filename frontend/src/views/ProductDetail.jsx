@@ -129,7 +129,7 @@ function ProductDetail() {
                 <div style={{ width: "100%", height: "0px", margin: "10px 0px", border: "2px solid var(--highlight)", borderRadius: "5px" }}></div>
                 <div className="cart-buy-btns">
                     <button className="add-to-cart" onClick={() => addToCart()}><TbShoppingCart /> Add to Cart</button>
-                    <button className="buy-now-button"><FaAnglesRight /> Buy Now</button>
+                    <button className="buy-now-button" onClick={()=>navigate('/buy-products',{state:{myCartProd:[productDetails], quantity:1, grandtotal:((productDetails.price*(1-productDetails.discount/100))*(1.1)).toFixed(2), subtotal:(productDetails.price*(1-productDetails.discount/100)).toFixed(2)}})}><FaAnglesRight /> Buy Now</button>
                 </div>
             </div>
             <div className="prod-other-info-container">

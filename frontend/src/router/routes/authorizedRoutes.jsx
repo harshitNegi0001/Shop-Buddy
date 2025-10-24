@@ -21,6 +21,11 @@ export const authorizedRoutes=[
         
     },
     {
+        path:'/products/:searchValue',
+        element:<Products/>,
+        
+    },
+    {
         path:'/orders-hist',
         element:<OrdersDetail/>,
         status:'authorized'

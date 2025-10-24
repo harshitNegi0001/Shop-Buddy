@@ -20,7 +20,8 @@
     gap: 10px;
 }
 
-.del-method {
+.del-method ,
+.pay-methods{
     display: flex;
 
     justify-content: space-around;
@@ -31,12 +32,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40%;
+    width: 45%;
     max-width: 250px;
-    height: 35px;
-    gap: 8px;
+    height: 40px;
+    gap: 5px;
     border-radius: 10px;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .active {
@@ -109,13 +111,80 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    height: 250px;
-    overflow-y: scroll;
-    scrollbar-width: none;
-    border: 1px solid red;
+    gap: 10px;
+    height: 280px;
+    
+    border: 2px solid var(--highlight);
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.price-box{
+    display:flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+.price-box div{
+    display: flex;
+    justify-content: space-between;
+}
+.payment-method-cont{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.card-detail{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* min-width: 270px; */
+    max-width: 350px;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: auto;
+    
+    margin-top: 15px;
+    border: 1px solid var(--highlight);
+    border-radius: 10px;
+}
+.buying-btn{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.buying-btn button{
+    width: 260px;
+    height: 35px;
+    border: none;
+    background-color: var(--btn);
+    border-radius: 10px;
+}
+.card-detail input{
+    background: none;
+    border: 2px solid var(--text);
+    border-radius: 10px;
+    height: 30px;
+    max-width: 350px;
+    outline-color: var(--primary);
+    color: var(--text);
+    padding: 0px 5px;
+}
+.buying-btn button:hover{
+    background-color: rgb(219, 72, 4);
+    transform: scale(0.98);
+    transition: all 200ms;
 }
 
+.buying-btn button:active{
+    background-color: rgb(219, 72, 4);
+    transform: scale(0.92);
+    transition: all 200ms;
+}
+.buying-btn button:disabled{
+    background-color: var(--btn);
+    transform: scale(1);
+}
 @media (max-width:750px) {
     .buy-prod-page {
         display: flex;
