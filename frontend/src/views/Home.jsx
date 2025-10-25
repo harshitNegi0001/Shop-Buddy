@@ -14,7 +14,7 @@ function Home() {
     const [products, setProducts] = useState([]);
     const [ratings,setRatings] = useState([]);
     const [hasmore, setHasmore] = useState(true);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const searchValue = '';
     useEffect(() => {
