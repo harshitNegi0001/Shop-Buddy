@@ -23,6 +23,22 @@ class Orders {
             return returnRes(res,403,{message:"You are not allowed"});
         }
     }
+    getMyOrderHist = async (req,res)=>{
+        const role = req.role;
+        if(role==='customer'){
+            const id = req.id;
+            try {
+                const result = await db.query('SELECT o.*, json_agg(p.*) AS prod_info FROM orders AS o JOIN products AS p ON p.id = ANY(o.products_id) WHERE o.customer_id =$1 GROUP BY o.id ORDER BY o.id DESC',[id]);
+                
+                return returnRes(res,200,{message:"success",ordersList:result.rows});
+            } catch (err) {
+                return returnRes(res,500,{message:"Internal Server Error"});
+            }
+        }
+        else{
+            return returnRes(res,403,{message:"You are not allowed"});
+        }
+    }
 }
 
 
