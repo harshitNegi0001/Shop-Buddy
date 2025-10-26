@@ -5,10 +5,12 @@ import { FaPlus, FaMinus } from "react-icons/fa6";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import '../stylesheet/myCart.css';
 import { Link, useNavigate } from "react-router-dom";
-import empty_cart from '../assets/empty_cart.png'
+import empty_cart from '../assets/empty_cart.png';
+import loadingGif from '../assets/loading3.webp';
 
 function MyCart() {
     const [myCartProd, setMyCartProd] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const Backend_port = import.meta.env.VITE_BACKEND_PORT;
     const [quantity, setQuantity] = useState([]);
     const platChargePrecent = 10;
@@ -35,6 +37,7 @@ function MyCart() {
     }
     const deleteFromCart = async (id, i) => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_port}/api/delete-from-myCart`, {
                 method: "POST",
                 headers: {
@@ -46,7 +49,7 @@ function MyCart() {
                 credentials: "include"
             });
             const result = await response.json();
-
+            setIsLoading(false);
             if (response.ok) {
                 toast.success("Product removed from cart");
                 closeProd(i);
@@ -55,18 +58,20 @@ function MyCart() {
                 toast.error("Error! " + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }
     const getMyCart = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_port}/api/get-cart-prod`, {
                 method: "GET",
                 credentials: "include"
             });
 
             const result = await response.json();
-
+            setIsLoading(false);
             if (response.ok) {
                 setMyCartProd(result.cartProd);
                 const temp = result.cartProd.map(i => 1)
@@ -77,6 +82,7 @@ function MyCart() {
                 toast.error("Error! " + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.messsage);
         }
     }
@@ -109,7 +115,8 @@ function MyCart() {
 
     return (
         <div>
-            {(myCartProd.length>0)?<div className="my-cart-cont" >
+            {isLoading && <div className="loading-div"><img src={loadingGif} /></div>}
+            {(myCartProd.length > 0) ? <div className="my-cart-cont" >
                 <div className="cart-products">
                     {myCartProd.map((prod, i) => <div key={i} className="cart-prod-detail">
                         <div className="close-card" onClick={() => closeProd(i)}><MdClose /></div>
@@ -139,11 +146,11 @@ function MyCart() {
                     <div style={{ width: "100%", height: "0px", border: "1px solid var(--highlight)", borderRadius: "5px" }}></div>
                     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}> <button onClick={() => navigateToBuy()}>Checkout</button></div>
                 </div>
-            </div>:<div style={{width:"100%",height:"calc(100vh - 120px)",fontWeight:"600",display:"flex",flexDirection:"column",gap:"10px",justifyContent:"center",alignItems:"center"}}>
-                <img src={empty_cart} alt="" style={{width:"300px"}} />
-                <span style={{fontSize:"24px",color:"var(--text)"}}>Your cart is empty</span>
-                <span style={{fontSize:"24px",color:"var(--text)"}}>Go Back <Link to={'/'} style={{color:"var(--primary)",fontWeight:"bold",textDecoration:"none"}}>Home</Link></span>
-                </div>}
+            </div> : <div style={{ width: "100%", height: "calc(100vh - 120px)", fontWeight: "600", display: "flex", flexDirection: "column", gap: "10px", justifyContent: "center", alignItems: "center" }}>
+                <img src={empty_cart} alt="" style={{ width: "300px" }} />
+                <span style={{ fontSize: "24px", color: "var(--text)" }}>Your cart is empty</span>
+                <span style={{ fontSize: "24px", color: "var(--text)" }}>Go Back <Link to={'/'} style={{ color: "var(--primary)", fontWeight: "bold", textDecoration: "none" }}>Home</Link></span>
+            </div>}
         </div>
     )
 }

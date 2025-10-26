@@ -60,7 +60,7 @@
 .prod-rating {
   color: var(--text);
   padding: 1px 4px;
-
+color: white;
   background-color: green;
   border-radius: 15px;
 

@@ -31,11 +31,23 @@
     width: 100%;
     max-width: 650px;
     border-radius: 10px;
+    box-sizing: border-box;
+    padding: 5px;
+
     display: flex;
     background-color: var(--header);
-    height: 170px;
+    height: fit-content;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
     box-shadow: 0px 0px 5px 0px var(--text);
 }
 .hist-prod-card img{
-    
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    background-color: white;
+    border-radius: 5px;
 }

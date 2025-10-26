@@ -13,6 +13,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 
 function ProductDetail() {
+    const [isLoading, setIsLoading] = useState(false);
     const Backend_port = import.meta.env.VITE_BACKEND_PORT;
     const { prodId } = useParams();
     const navigate = useNavigate()
@@ -48,6 +49,7 @@ function ProductDetail() {
     }, [productDetails])
     const addToCart = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_port}/api/add-to-cart`, {
                 method: "POST",
                 headers: {
@@ -59,6 +61,7 @@ function ProductDetail() {
                 credentials: "include"
             })
             const result = await response.json();
+            setIsLoading(false);
             if (response.ok) {
                 toast.success("added to cart")
             }
@@ -66,14 +69,17 @@ function ProductDetail() {
                 toast.error("Error " + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
 
         }
     }
     const getSimilarProd = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_port}/api/get-products?searchValue=${productDetails.category_name}&parPage=${10}&currPage=${page}`);
             const result = await response.json();
+            setIsLoading(false);
             if (response.ok) {
 
                 if (result.products.length === 0) {
@@ -88,14 +94,16 @@ function ProductDetail() {
                 toast.error("Error! " + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }
     const getProductDetail = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_port}/api/get-product-detail?productId=${prodId}`);
             const result = await response.json();
-
+            setIsLoading(false);
             if (response.ok) {
                 setProductDetails(result.prodDetail);
 
@@ -111,12 +119,14 @@ function ProductDetail() {
 
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }
 
     return (
         <div id="scroll-prod-detail" className="prod-detail-cont">
+            {isLoading && <div className="loading-div"><img src={loadingGif} /></div>}
             <div className="image-container">
                 {selectedImg && <img className="selected-image" src={selectedImg} alt="" />}
                 <div className="img-option">
@@ -129,7 +139,7 @@ function ProductDetail() {
                 <div style={{ width: "100%", height: "0px", margin: "10px 0px", border: "2px solid var(--highlight)", borderRadius: "5px" }}></div>
                 <div className="cart-buy-btns">
                     <button className="add-to-cart" onClick={() => addToCart()}><TbShoppingCart /> Add to Cart</button>
-                    <button className="buy-now-button" onClick={()=>navigate('/buy-products',{state:{myCartProd:[productDetails], quantity:1, grandtotal:((productDetails.price*(1-productDetails.discount/100))*(1.1)).toFixed(2), subtotal:(productDetails.price*(1-productDetails.discount/100)).toFixed(2)}})}><FaAnglesRight /> Buy Now</button>
+                    <button className="buy-now-button" onClick={() => navigate('/buy-products', { state: { myCartProd: [productDetails], quantity: 1, grandtotal: ((productDetails.price * (1 - productDetails.discount / 100)) * (1.1)).toFixed(2), subtotal: (productDetails.price * (1 - productDetails.discount / 100)).toFixed(2) } })}><FaAnglesRight /> Buy Now</button>
                 </div>
             </div>
             <div className="prod-other-info-container">

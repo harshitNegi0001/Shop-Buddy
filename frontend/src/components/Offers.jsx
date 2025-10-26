@@ -10,7 +10,7 @@ const responsive = {
 };
 
 
-function Offers() {
+function Offers({setIsLoading}) {
     const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
     const [offerHighlight, setOfferHighlight] = useState([]);
     useEffect(() => {
@@ -19,8 +19,10 @@ function Offers() {
     const getOfferHighlight = async () => {
 
         try {
+            setIsLoading(true);
             const response = await fetch(`${BACKEND_PORT}/api/get-offer-highlight`);
             const result = await response.json();
+            setIsLoading(false);
             if (response.ok) {
                 setOfferHighlight(result.highlight)
             }
@@ -28,6 +30,7 @@ function Offers() {
                 toast.error("Error! " + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }

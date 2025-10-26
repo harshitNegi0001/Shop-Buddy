@@ -32,7 +32,8 @@
 
   position: relative;
 }
-.chat-sel {
+.chat-sel,
+.active-chat-sel {
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -40,6 +41,10 @@
   box-sizing: border-box;
   padding: 5px;
   gap: 5px;
+}
+.active-chat-sel{
+  background: var(--highlight);
+  border-radius: 5px;
 }
 .chat-sel:hover {
   background: var(--highlight);

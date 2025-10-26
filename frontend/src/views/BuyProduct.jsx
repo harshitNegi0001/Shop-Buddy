@@ -7,8 +7,10 @@ import { useState } from 'react';
 import '../stylesheet/buyProduct.css';
 import toast from 'react-hot-toast';
 import { useLocation } from "react-router-dom";
+import loadingGif from '../assets/loading3.webp';
 function BuyProduct() {
     const location = useLocation();
+    const [isLoading, setIsLoading] = useState(false);
     const Backend_port = import.meta.env.VITE_BACKEND_PORT;
     const { userInfo } = useSelector(state => state.auth);
     const { myCartProd, quantity, grandtotal, subtotal } = location.state;
@@ -34,7 +36,6 @@ function BuyProduct() {
         lastName: '',
         expiry: ''
     })
-    console.log(cardInfo);
     const changeFormData = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
@@ -56,6 +57,7 @@ function BuyProduct() {
             }
             else {
                 try {
+                    setIsLoading(true);
                     const response = await fetch(`${Backend_port}/api/book-my-order`, {
                         method: 'POST',
                         headers: {
@@ -63,7 +65,7 @@ function BuyProduct() {
                         },
                         body: JSON.stringify({
                             formData: formData,
-                            cardInfo:(paymentMethod==='card')?cardInfo:null,
+                            cardInfo: (paymentMethod === 'card') ? cardInfo : null,
                             myCartProd,
                             quantity,
                             deliveryMeth,
@@ -72,15 +74,16 @@ function BuyProduct() {
                         credentials: "include"
                     });
                     const result = await response.json();
-
-                    if(response.ok){
+                    setIsLoading(false);
+                    if (response.ok) {
                         toast.success("Order queued");
-                        
+
                     }
-                    else{
-                        toast.error("Error! "+result.message);;
+                    else {
+                        toast.error("Error! " + result.message);;
                     }
                 } catch (err) {
+                    setIsLoading(false);
                     toast.error("Error! " + err.message);
                 }
             }
@@ -90,6 +93,7 @@ function BuyProduct() {
     }
     return (
         <div className="buy-prod-page">
+            {isLoading && <div className="loading-div"><img src={loadingGif} /></div>}
             <div className="delivery-container">
                 <span>Shipping Information</span>
                 <div className="del-method">
