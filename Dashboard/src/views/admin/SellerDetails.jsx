@@ -10,6 +10,7 @@ function SellerDetails(){
     const [status,setStatus] = useState('');
     const {sellerId} = useParams();
     const [loading,setLoading] =useState(false);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     useEffect(()=>{
         getSellerDetail();
     },[]);
@@ -21,7 +22,7 @@ function SellerDetails(){
                 return;
             }
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/set-seller-status`,{
+            const response = await fetch(`${Backend_Port}/api/set-seller-status`,{
                 method:"POST",
                 headers:{
                     "Content-type":"application/json"
@@ -52,7 +53,7 @@ function SellerDetails(){
     const getSellerDetail = async()=>{
         try{
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/get-seller-detail?id=${sellerId}`,{
+            const response = await fetch(`${Backend_Port}/api/get-seller-detail?id=${sellerId}`,{
                 method:"GET",
                 credentials:"include"
             });

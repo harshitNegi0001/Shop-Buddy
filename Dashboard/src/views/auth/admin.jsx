@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 function AdminLogin() {
     const {login} = useContext(AuthContext)
     const navigate = useNavigate();
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
@@ -30,7 +31,7 @@ function AdminLogin() {
             //if all input are okk
             //then submit data
             try {
-                const response = await fetch('http://localhost:5000/api/admin-login', {
+                const response = await fetch(`${Backend_Port}/api/admin-login`, {
                     method: "POST",
                     headers: {
                         "content-type": "application/json"

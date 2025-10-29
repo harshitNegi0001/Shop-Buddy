@@ -1,24 +1,25 @@
-import '../../stylesheet/register.css';
-import userSvg from '../../assets/user-svgrepo-com.svg';
-import emailSvg from '../../assets/email-svgrepo-com.svg';
-import lockSvg from '../../assets/lock-svgrepo-com.svg';
-import keySvg from '../../assets/key-svgrepo-com.svg';
-import errorSvg from '../../assets/error-svgrepo-com.svg';
-import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
-import { useActionState, useContext, useState } from 'react';
+import '../stylesheet/authPages.css';
+import userSvg from '../assets/user-svgrepo-com.svg';
+import emailSvg from '../assets/email-svgrepo-com.svg';
+import lockSvg from '../assets/lock-svgrepo-com.svg';
+import keySvg from '../assets/key-svgrepo-com.svg';
+// import errorSvg from '../assets/error-svgrepo-com.svg';
+// import wrongSvg from '../assets/wrong-svgrepo-com.svg';
+import { useActionState, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import loading from '../../assets/loading3.webp'
-import { AuthContext } from '../../context/role_management';
+import loadingGif from '../assets/loading3.webp';
+import { useDispatch } from 'react-redux';
+import { login } from '../Store/reducer/authReducer.js';
 import { jwtDecode } from 'jwt-decode';
 
 
 
 function Register() {
+    const dispatch = useDispatch()
     
-    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
+    const backendPort = import.meta.env.VITE_BACKEND_PORT;
     const navigate = useNavigate();
-    const {login} = useContext(AuthContext);
     
     async function handleInput(pre, curr) {
         const name = curr.get('name').trim();
@@ -31,23 +32,23 @@ function Register() {
             const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const checkName = /^[A-Za-z\s'-]+$/;
             if (!checkName.test(name)) {
-                setErrMessage("Your name cannot contain numbers");
+                // setErrMessage("Your name cannot contain numbers");
                 toast.error("Your name cannot contain numbers");
                 return;
             }
             if (!checkEmail.test(email)) {
-                setErrMessage("Invalid Email Format");
+                // setErrMessage("Invalid Email Format");
                 toast.error("Invalid Email Format");
                 return;
             }
             if (password !== retype) {
-                setErrMessage("Password confirmation failed. Please confirm password properly");
+                // setErrMessage("Password confirmation failed. Please confirm password properly");
                 toast.error("Password confirmation failed. \nPlease confirm password properly");
                 return;
             }
 
             try {
-                const response = await fetch(`${Backend_Port}/api/seller-register`,{
+                const response = await fetch(`${backendPort}/api/customer-register`,{
                     method:'POST',
                     headers:{
                         "content-type":"application/json"
@@ -67,38 +68,31 @@ function Register() {
                 else {
                     toast.success(result.message);
                     const decodeToken = jwtDecode(result.token);
-                    login(result.token,decodeToken.role,decodeToken.id);
+                    
+                    console.log("we are here 1");
+                    dispatch(login({ userId: decodeToken.id, userRole: decodeToken.role, userInfo: result.userInfo }));
+                    navigate('/');
+                    // login(result.token,decodeToken.role,decodeToken.id);
                     // navigate('/');
                 }
             }
             catch (err) {
-                setErrMessage(err.message);
+                
+                 toast.error(err.message);
             }
 
-            //if all input are okk
-            //then submit data
+            
 
         }
-        else {
-            setErrMessage("Please enter all inputs");
-            return;
-        }
+       
 
     }
     const [data, action, pendding] = useActionState(handleInput)
-    const [errMessage, setErrMessage] = useState('')
+    
     return (
         <div className='auth-container' >
-            {errMessage && <div className="error-box">
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <img src={errorSvg} alt="" />
-                    <span>{errMessage}</span>
-                </div>
-
-                <img src={wrongSvg} alt="" onClick={() => setErrMessage('')} />
-            </div>}
             {pendding && <div className='load-back'>
-                <img className='loading' src={loading} alt='loading...' />
+                <img className='loading' src={loadingGif} alt='loading...' />
             </div>}
             <div className="authContainer" style={{}}>
                 <div className="formContainer" style={{}}>

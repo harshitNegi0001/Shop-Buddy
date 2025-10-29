@@ -12,6 +12,7 @@ router.post('/seller-register',authController.sellerRegister);
 router.post('/update-profile',authMiddleware,authController.updateProfile);
 router.post('/seller-login',authController.sellerLogin);
 router.post('/customer-login',authController.customerLogin);
+router.post('/customer-register',authController.customerRegister);
 router.post('/edit-customer-prof',authMiddleware,authController.editCustomerInfo);
 
 

@@ -18,6 +18,8 @@ function ProductDetail() {
     const { prodId } = useParams();
     const navigate = useNavigate()
     const [selectedImg, setSelectedImg] = useState('');
+    const [topRating, setTopRating] = useState([]);
+    const [similarRatings, setSimilarRatings] = useState([])
     const [priceDiscount, setPriceDiscount] = useState({
         maxPrice: 0,
         minPrice: 0,
@@ -87,6 +89,7 @@ function ProductDetail() {
                     setHasmore(false);
                     return;
                 }
+                setSimilarRatings((prev) => [...prev, ...result.ratings]);
                 setProducts((prev) => [...prev, ...result.products]);
                 setPage((prev) => prev + 1);
             }
@@ -106,7 +109,8 @@ function ProductDetail() {
             setIsLoading(false);
             if (response.ok) {
                 setProductDetails(result.prodDetail);
-
+                // console.log(result.topRating);
+                setTopRating(result.topRating);
                 setRating(result.rating);
                 setSelectedImg(result.prodDetail?.images?.[0]);
                 const maxPrice = result.prodDetail.price;
@@ -139,7 +143,7 @@ function ProductDetail() {
                 <div style={{ width: "100%", height: "0px", margin: "10px 0px", border: "2px solid var(--highlight)", borderRadius: "5px" }}></div>
                 <div className="cart-buy-btns">
                     <button className="add-to-cart" onClick={() => addToCart()}><TbShoppingCart /> Add to Cart</button>
-                    <button className="buy-now-button" onClick={() => navigate('/buy-products', { state: { myCartProd: [productDetails], quantity: 1, grandtotal: ((productDetails.price * (1 - productDetails.discount / 100)) * (1.1)).toFixed(2), subtotal: (productDetails.price * (1 - productDetails.discount / 100)).toFixed(2) } })}><FaAnglesRight /> Buy Now</button>
+                    <button className="buy-now-button" onClick={() => navigate('/buy-products', { state: { myCartProd: [productDetails], quantity: [1], grandtotal: ((productDetails.price * (1 - productDetails.discount / 100)) * (1.1)).toFixed(2), subtotal: (productDetails.price * (1 - productDetails.discount / 100)).toFixed(2) } })}><FaAnglesRight /> Buy Now</button>
                 </div>
             </div>
             <div className="prod-other-info-container">
@@ -179,8 +183,24 @@ function ProductDetail() {
                             <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "var(--text)", fontSize: "12px" }}><span style={{ width: "65px" }}>Good</span><div style={{ width: "calc(100% - 100px)", overflow: "hidden", height: "6px", boxSizing: "border-box", backgroundColor: "var(--highlight)", borderRadius: "5px" }}><div style={{ border: `${((ratings.ratingDetail.three / ratings.totalStars) * 100) > 0 ? '3px solid yellow' : 'none'}`, width: `${(ratings.ratingDetail.three / ratings.totalStars) * 100}%`, borderRadius: "5px" }}></div></div><span>{ratings.ratingDetail.three}</span></div>
                             <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "var(--text)", fontSize: "12px" }}><span style={{ width: "65px" }}>Average</span><div style={{ width: "calc(100% - 100px)", overflow: "hidden", height: "6px", boxSizing: "border-box", backgroundColor: "var(--highlight)", borderRadius: "5px" }}><div style={{ border: `${((ratings.ratingDetail.two / ratings.totalStars) * 100) > 0 ? '3px solid orange' : 'none'}`, width: `${(ratings.ratingDetail.two / ratings.totalStars) * 100}%`, borderRadius: "5px" }}></div></div><span>{ratings.ratingDetail.two}</span></div>
                             <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "var(--text)", fontSize: "12px" }}><span style={{ width: "65px" }}>Poor</span><div style={{ width: "calc(100% - 100px)", overflow: "hidden", height: "6px", boxSizing: "border-box", backgroundColor: "var(--highlight)", borderRadius: "5px" }}><div style={{ border: `${((ratings.ratingDetail.one / ratings.totalStars) * 100) > 0 ? '3px solid red' : 'none'}`, width: `${(ratings.ratingDetail.one / ratings.totalStars) * 100}%`, borderRadius: "5px" }}></div></div><span>{ratings.ratingDetail.one}</span></div>
+
                         </div>
                     </div>
+                    <div style={{ width: "100%", height: "0px", border: '1px solid var(--highlight)', margin: "10px 0px" }}></div>
+                    {
+                        topRating.map((cmnt, i) =>
+                            <div key={i} style={{ display: "flex", flexDirection: "column", borderBottom: "2px solid var(--highlight)", gap: "5px" }}>
+
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" }}>
+                                    <img src={cmnt.userDetail?.image} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
+                                    <span>{cmnt.userDetail.name}</span>
+                                </div>
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" ,marginBottom:"10px"}}>
+                                    <span className="prod-rating">{cmnt.star} <FaStar /></span>
+                                    <span style={{fontSize:"12px"}}>{cmnt.comment}</span>
+                                </div>
+                            </div>)
+                    }
                 </div>
             </div>
 
@@ -202,9 +222,9 @@ function ProductDetail() {
                             return (<div key={i} className="card-div" onClick={() => navigate(`/product-detail/${p.id}`)}>
                                 <img src={p.images[0]} alt="" />
                                 <span className="prod-card-name" >{p.name}</span>
-                                <div><span className="card-new-price" >{p.price}</span> <span className="card-old-price" >$599</span> <span className="card-discount" >10% off</span></div>
+                                <div><span className="card-new-price" >₹{p.price}</span> <span className="card-old-price" >₹599</span> <span className="card-discount" >10% off</span></div>
                                 <div style={{ color: "var(--text)", fontSize: "12px" }}>free delivery</div>
-                                <div className="card-rating-div" ><span className="prod-rating" >4.9 <FaStar /></span><span className="card-reviwes">(100 Reviews)</span></div>
+                                <div className="card-rating-div" ><span className="prod-rating" >{similarRatings?.[i].avgRating} <FaStar /></span><span className="card-reviwes">({similarRatings?.[i].totalReview} Reviews)</span></div>
                             </div>)
                         }
                         )}

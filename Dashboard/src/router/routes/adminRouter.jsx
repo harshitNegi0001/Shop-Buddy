@@ -9,7 +9,8 @@ const DeactiveSellers = lazy(()=>import("../../views/admin/DeactiveSellers.jsx")
 const SellerRequest = lazy(()=>import("../../views/admin/SellerRequest.jsx"));
 const LiveChat = lazy(()=>import("../../views/admin/LiveChat.jsx"));
 const SellerDetails = lazy(()=>import("../../views/admin/SellerDetails.jsx"));
-const OrderDetails = lazy(()=>import("../../views/admin/orderDetails.jsx"));
+const OrderDetails = lazy(()=>import("../../views/admin/OrderDetails.jsx"));
+
 
 export const adminRoutes = [
     

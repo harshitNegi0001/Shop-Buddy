@@ -22,7 +22,7 @@ function Category() {
     });
     const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
     const [totalItem, setTotalItem] = useState(0);
-
+const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(searchValue);
@@ -38,7 +38,7 @@ function Category() {
     const handleChanges = async () => {
         try {
             setState({ ...state, loading: true });
-            const response = await fetch('http://localhost:5000/api/get-category', {
+            const response = await fetch(`${Backend_Port}/api/get-category`, {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json"
@@ -93,7 +93,7 @@ function Category() {
                 const formData = new FormData();
                 formData.append("image", image);
                 formData.append("name", name);
-                const response = await fetch('http://localhost:5000/api/add-new-category', {
+                const response = await fetch(`${Backend_Port}/api/add-new-category`, {
                     method: "POST",
                     body: formData,
                     credentials: "include"

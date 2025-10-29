@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 function AllProducts() {
     const { auth } = useContext(AuthContext);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     const sellerId = auth.id;
     const [loader, setLoader] = useState(false);
     const [currPage, setCurrPage] = useState(1);
@@ -38,7 +39,7 @@ function AllProducts() {
     const getProducts = async () => {
         try {
             setLoader(true);
-            const response = await fetch(`http://localhost:5000/api/get-products?searchValue=${searchValue}&&parPage=${parPage}&&currPage=${currPage}&&sellerId=${sellerId}`);
+            const response = await fetch(`${Backend_Port}/api/get-products?searchValue=${searchValue}&&parPage=${parPage}&&currPage=${currPage}&&sellerId=${sellerId}`);
             const result = await response.json();
             setLoader(false);
             if (!response.ok) {

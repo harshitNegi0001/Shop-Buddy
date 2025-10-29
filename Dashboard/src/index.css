@@ -30,8 +30,30 @@
     --mess-outer:#262d31;
     --chat-list-bg:#1e241e;
   }
+
+
   
   
+  
+}
+
+
+.loading-div{
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  height: 100vh;
+  display: flex;
+background-color: rgba(129, 129, 129, 0.055);
+backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+}
+.loading-div img{
+  width: 40px;
+  height: 40px;
 }
 
 *{

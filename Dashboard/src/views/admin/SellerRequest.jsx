@@ -16,6 +16,7 @@ function SellerRequests() {
     const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
     const [totalItem, setTotalItem] = useState(0);
     const [loading, setLoading] = useState(false);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(searchValue);
@@ -34,7 +35,7 @@ function SellerRequests() {
 
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/get-sellers?parPage=${parPage}&&currPage=${currPage}&&searchValue=${searchValue}&&status=pending`, {
+            const response = await fetch(`${Backend_Port}/api/get-sellers?parPage=${parPage}&&currPage=${currPage}&&searchValue=${searchValue}&&status=pending`, {
                 method: "GET",
                 credentials: "include"
             });

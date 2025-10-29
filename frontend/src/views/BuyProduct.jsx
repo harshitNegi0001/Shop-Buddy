@@ -17,15 +17,15 @@ function BuyProduct() {
     const [deliveryMeth, setDeliveryMeth] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
     const [formData, setFormData] = useState({
-        full_name: userInfo.name,
-        email: userInfo.email,
-        phone_no: userInfo.phone_no,
+        full_name: userInfo.name??'',
+        email: userInfo.email??'',
+        phone_no: userInfo.phone_no??'',
         address: {
-            house_no: userInfo.address.houseNo,
-            city: userInfo.address.cityName,
-            district: userInfo.address.district,
-            pincode: userInfo.address.pincode,
-            state: userInfo.address.state
+            house_no: userInfo.address?.houseNo??'',
+            city: userInfo.address?.cityName??'',
+            district: userInfo.address?.district??'',
+            pincode: userInfo.address?.pincode??'',
+            state: userInfo.address?.state??''
         },
         confirmDetail: false
     });

@@ -68,19 +68,27 @@ class AuthController {
         return returnRes(res, 200, { userInfo: userDetail });
       }
       else if (role === 'customer') {
+        // console.log("customer check")
+        
         const user = await db.query("SELECT id,name,image,address,email,phone_no FROM customers WHERE id =$1", [id]);
+
         if (user.rows.length > 0) {
+          
           return returnRes(res, 200, { message: "Success", userId: user.rows[0].id, userInfo: user.rows[0], userRole: 'customer' })
         }
         else {
+          // console.log("customer check")
           return returnRes(res, 400, { message: "Something went wrong" });
 
         }
       }
       else {
+
         return returnRes(res, 404, { userInfo: null, message: 'user not found' });
       }
     } catch (err) {
+
+      console.log(err);
       return returnRes(res, 400, { message: err.message });
     }
   }
@@ -98,7 +106,7 @@ class AuthController {
       const hasedPass = await bcrypt.hash(password, 10);
       const result = await db.query("INSERT INTO seller_info(s_name,s_email,s_pass) VALUES ($1,$2,$3) RETURNING s_id,s_role", [name, email, hasedPass]);
       const seller = result.rows[0];
-      await db.query("INSERT INTO seller_customer (myId) VALUES ($1)", [seller.s_id]);
+      // await db.query("INSERT INTO seller_customer (myId) VALUES ($1)", [seller.s_id]);
       const token = await createToken({
         id: seller.s_id,
         role: seller.s_role
@@ -246,13 +254,13 @@ class AuthController {
             sameSite: 'Lax',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           });
-          res.cookie('isAuth',true,{
+          res.cookie('isAuth', true, {
             httpOnly: false,
             secure: false,
             sameSite: 'Lax',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           })
-          return returnRes(res, 200, { message: "Welcome back" ,token:token,userInfo:user.rows[0]});
+          return returnRes(res, 200, { message: "Welcome back", token: token, userInfo: user.rows[0] });
         }
         else {
           return returnRes(res, 400, { message: "Wrong Email or Password" });
@@ -279,33 +287,74 @@ class AuthController {
       sameSite: 'Lax',
       expires: new Date(0),
     })
-    return returnRes(res,200,{message:"Successfully Logout"});
+    return returnRes(res, 200, { message: "Successfully Logout" });
   }
 
-  editCustomerInfo = async (req,res)=>{
+  editCustomerInfo = async (req, res) => {
     const role = req.role;
-    
-    if(role==='customer'){
+
+    if (role === 'customer') {
       try {
         const id = req.id;
-        const {editedDetail} = req.body;
-        const result = await db.query("UPDATE customers SET name = $1 , email= $2 , phone_no =$3, address =$4 WHERE id = $5 RETURNING *",[editedDetail.name,editedDetail.email,editedDetail.phone,editedDetail.address,id]);
-        if(result.rows.length>0){
-          return returnRes(res,200,{message:"Success",userInfo:result.rows[0]});
+        const { editedDetail } = req.body;
+        const result = await db.query("UPDATE customers SET name = $1 , email= $2 , phone_no =$3, address =$4 WHERE id = $5 RETURNING *", [editedDetail.name, editedDetail.email, editedDetail.phone, editedDetail.address, id]);
+        if (result.rows.length > 0) {
+          return returnRes(res, 200, { message: "Success", userInfo: result.rows[0] });
         }
-        else{
-          return returnRes(res,404,{message:"Something went wrong"});
+        else {
+          return returnRes(res, 404, { message: "Something went wrong" });
         }
       } catch (err) {
         console.log(err)
-        return returnRes(res,500,{message:"Internal Server Error"});
+        return returnRes(res, 500, { message: "Internal Server Error" });
       }
     }
-    else{
-      return returnRes(res,403,{message:"You are not allowed"});
+    else {
+      return returnRes(res, 403, { message: "You are not allowed" });
     }
   }
 
+  customerRegister = async (req, res) => {
+    // console.log('user register')
+    const { name, email, password } = req.body;
+    try {
+
+      const searchEmail = await db.query("SELECT * FROM customers WHERE email = $1", [email]);
+      if (searchEmail.rows.length > 0) {
+        return returnRes(res, 409, { message: "This email is already registered" });
+      }
+      const hasedPass = await bcrypt.hash(password, 10);
+      const result = await db.query("INSERT INTO customers (name,email,password) VALUES ($1,$2,$3) RETURNING id,name,email,image", [name, email, hasedPass]);
+
+      const customer = result.rows[0];
+
+      const token = await createToken({
+        id: customer.id,
+        role: 'customer'
+      });
+      res.cookie('accessToken', token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Lax',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      });
+      res.cookie('isAuth', true, {
+        httpOnly: false,
+        secure: false,
+        sameSite: 'Lax',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      });
+      // console.log(customer)
+      return returnRes(res, 201, { message: "Registered Successful", token: token ,userInfo:customer});
+
+
+    }
+    catch (err) {
+      console.log(err);
+      return returnRes(res, 500, { message: "Internal server error" });
+    }
+
+  }
 }
 
 export default new AuthController();

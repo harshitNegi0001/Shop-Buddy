@@ -70,7 +70,7 @@ function SellerChat() {
         try {
 
             setIsLoading(true);
-            const response = await fetch(`${Backend_port}/api/msg/seller-costomer?sellerId=${sellerId}`, {
+            const response = await fetch(`${Backend_port}/api/msg/seller-customer?sellerId=${sellerId}`, {
                 method: "GET",
                 credentials: "include"
             }

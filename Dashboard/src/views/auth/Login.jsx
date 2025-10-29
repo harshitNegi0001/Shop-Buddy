@@ -10,7 +10,8 @@ import toast from 'react-hot-toast';
 import { AuthContext } from '../../context/role_management';
 import { jwtDecode } from "jwt-decode";
 function Login() {
-    const { login } = useContext(AuthContext)
+    const { login } = useContext(AuthContext);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
@@ -27,7 +28,7 @@ function Login() {
             //if all input are okk
             //then submit data
             try {
-                const response = await fetch('http://localhost:5000/api/seller-login', {
+                const response = await fetch(`${Backend_Port}/api/seller-login`, {
                     method: "POST",
                     headers: {
                         "content-type": "application/json"

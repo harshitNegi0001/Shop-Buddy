@@ -98,7 +98,7 @@ class Product {
                 if (isAlready.rows.length == 0) {
                     await db.query('INSERT INTO add_to_cart (product_id,customer_id) values ($1,$2)', [prodId, id])
                 }
-                return  returnRes(res,200,{message:"Success"});
+                return returnRes(res, 200, { message: "Success" });
 
             } catch (err) {
                 console.log(err);
@@ -113,9 +113,29 @@ class Product {
         const { productId } = req.query;
         try {
             const result = await db.query("SELECT * FROM product_detail WHERE id = $1", [productId]);
-            const ratingObj = calculateRating(result.rows[0].comments)
+            const ratingObj = calculateRating(result.rows[0].comments);
+            let lastestRatings = []
+            for (const cmnt of result.rows[0].comments.slice().reverse()) {
+
+                if (lastestRatings.length >= 3) {
+                    break;
+                }
+                else {
+                    if (cmnt.comment) {
+                        lastestRatings.push(cmnt);
+                    }
+                }
+            }
+
+            const custIds = lastestRatings.map(c => c.customer_id);
+
+            const userDetail = await db.query('SELECT id,name,image FROM customers WHERE id= ANY( $1) ORDER BY array_position($1, id)', [custIds]);
+
+            for (let i = 0; i < lastestRatings.length; i++) {
+                lastestRatings[i] = { ...lastestRatings[i], userDetail: userDetail.rows[i] }
+            }
             if (result.rows.length > 0) {
-                return returnRes(res, 200, { message: "successful", prodDetail: result.rows[0], rating: ratingObj });
+                return returnRes(res, 200, { message: "successful", prodDetail: result.rows[0], rating: ratingObj, topRating: lastestRatings });
             }
             else {
                 return returnRes(res, 400, { message: "No Product found" });
@@ -126,32 +146,32 @@ class Product {
             return returnRes(res, 500, { message: "Internal Server Error" });
         }
     }
-    rateProd = async(req,res)=>{
+    rateProd = async (req, res) => {
         const role = req.role;
         // if(role==='customer'){
         const id = 1;
-            const {prodId , comment} = req.body;
-            try {
-                
-                const oldCom = await db.query('SELECT comments FROM products WHERE id = $1',[prodId]);
+        const { prodId, comment } = req.body;
+        try {
 
-                const isAlready = oldCom.rows[0].comments.find(i=>i.customer_id==id)
-                if(!isAlready){
-                    const updatedCom = [...oldCom.rows[0].comments,comment];
-                    await db.query("UPDATE products SET comments = $1 WHERE id = $2",[updatedCom,prodId]);
-                }
-                else{
-                    const filteredCom = oldCom.rows[0].comments.filter(c=>c.customer_id!=id);
-                    const updatedCom = [...filteredCom,comment];
-                    await db.query("UPDATE products SET comments = $1 WHERE id = $2",[updatedCom,prodId]);
-                }
-                
+            const oldCom = await db.query('SELECT comments FROM products WHERE id = $1', [prodId]);
 
-                return returnRes(res,200,{message:"Success"});
-            } catch (err) {
-                console.log(err);
-                return returnRes(res,500,{message:"Internal Server Error"});
+            const isAlready = oldCom.rows[0].comments.find(i => i.customer_id == id)
+            if (!isAlready) {
+                const updatedCom = [...oldCom.rows[0].comments, comment];
+                await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
             }
+            else {
+                const filteredCom = oldCom.rows[0].comments.filter(c => c.customer_id != id);
+                const updatedCom = [...filteredCom, comment];
+                await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
+            }
+
+
+            return returnRes(res, 200, { message: "Success" });
+        } catch (err) {
+            console.log(err);
+            return returnRes(res, 500, { message: "Internal Server Error" });
+        }
         // }
         // else{
         //     return returnRes(res,403,{message:"You are not allowed to access"});
@@ -222,39 +242,39 @@ class Product {
         }
     }
 
-    getMyCart = async(req,res)=>{
+    getMyCart = async (req, res) => {
         const role = req.role;
-        if(role==='customer'){
+        if (role === 'customer') {
             const id = req.id;
             try {
-                const cartProd = await db.query('SELECT c.id as cart_id,p.* FROM add_to_cart AS c JOIN products AS p ON p.id = c.product_id WHERE customer_id = $1 ORDER BY cart_id DESC',[id]);
-                return returnRes(res,200,{message:"Success",cartProd:cartProd.rows});
+                const cartProd = await db.query('SELECT c.id as cart_id,p.* FROM add_to_cart AS c JOIN products AS p ON p.id = c.product_id WHERE customer_id = $1 ORDER BY cart_id DESC', [id]);
+                return returnRes(res, 200, { message: "Success", cartProd: cartProd.rows });
             } catch (err) {
                 // console.log(err);
                 return returnRes(res, 500, { message: "Internal Server Error" });
             }
         }
-        else{
-            return returnRes(res,403,{message:"You are not allowed to access"});
+        else {
+            return returnRes(res, 403, { message: "You are not allowed to access" });
         }
     }
-    deleteFromCart =async(req,res)=>{
+    deleteFromCart = async (req, res) => {
         const role = req.role;
-        if(role==='customer'){
-            const  id = req.id;
+        if (role === 'customer') {
+            const id = req.id;
 
             try {
-                const {cart_id} = req.body;
-                await db.query("DELETE FROM add_to_cart WHERE id =$1",[cart_id]);
-                return returnRes(res,200,{message:"Success"});
-                
+                const { cart_id } = req.body;
+                await db.query("DELETE FROM add_to_cart WHERE id =$1", [cart_id]);
+                return returnRes(res, 200, { message: "Success" });
+
             } catch (err) {
                 // console.log(err);
-                return returnRes(res,500,{message:"Internal server error"});
+                return returnRes(res, 500, { message: "Internal server error" });
             }
         }
-        else{
-            return returnRes(res,403,{message:"You are not allowed"});
+        else {
+            return returnRes(res, 403, { message: "You are not allowed" });
         }
     }
 }

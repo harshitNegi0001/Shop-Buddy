@@ -13,8 +13,7 @@ function Login() {
     const backendPort = import.meta.env.VITE_BACKEND_PORT;
     const dispatch = useDispatch();
 
-    const navigate = useNavigate()
-    // console.log(".env var",process.env.BACKEND_PORT)
+    const navigate = useNavigate();
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
         const password = curr.get('password').trim();
@@ -23,7 +22,7 @@ function Login() {
 
             const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!checkEmail.test(email)) {
-                setErrMessage("Invalid Email Format");
+                
                 toast.error("Invalid Email Format");
                 return;
             }
@@ -42,13 +41,14 @@ function Login() {
                 });
                 const result = await response.json();
                 if (!response.ok) {
-                    console.log("wrong")
+                    
                     toast.error(result.message);
                 }
                 else {
 
                     toast.success(result.message);
                     const decodeToken = jwtDecode(result.token);
+
                     dispatch(login({ userId: decodeToken.id, userRole: decodeToken.role, userInfo: result.userInfo }));
                     navigate('/');
                 }
@@ -58,13 +58,10 @@ function Login() {
                 toast.error(err.message);
             }
         }
-        else {
-            return;
-        }
 
     }
     const [data, action, pendding] = useActionState(handleInput);
-    const [errMessage, setErrMessage] = useState('')
+
     return (
         <div className='auth-container'>
 

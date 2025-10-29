@@ -18,6 +18,22 @@ class Messages {
 
 
     }
+    getSellerAdmin = async (req, res) => {
+        const id = req.id;
+        const role = req.role;
+        if (role === 'seller' || role === 'admin') {
+            const sellerId = (role === 'seller') ? id : req.query.sellerId;
+            const adminId = (role === 'seller') ? req.query.adminId : id;
+
+            const messages = await db.query('SELECT * FROM seller_admin WHERE seller_id = $1 AND admin_id = $2 ORDER BY created_at DESC', [sellerId, adminId]);
+            return returnRes(res, 200, { message: 'Success', messages: messages.rows });
+        }
+        else {
+            return returnRes(res, 403, { message: "Access denied. You do not have permission." });
+        }
+
+
+    }
     getChatList = async (req, res) => {
         const role = req.role;
         const id = req.id;
@@ -31,7 +47,7 @@ class Messages {
         try {
             if (role == 'seller') {
                 if (required === 'customers') {
-                    const recentList = await db.query('SELECT c.id,c.name,c.image,max(sc.created_at) FROM customers AS c JOIN seller_customer AS sc ON c.id = sc.customer_id WHERE sc.seller_id = $1 GROUP BY (c.id,c.name,c.image) ORDER BY max(sc.created_at) ', [id]);
+                    const recentList = await db.query('SELECT c.id,c.name,c.image,max(sc.created_at) FROM customers AS c JOIN seller_customer AS sc ON c.id = sc.customer_id WHERE sc.seller_id = $1 GROUP BY (c.id,c.name,c.image) ORDER BY max(sc.created_at) DESC', [id]);
                     const selectedIds = recentList.rows.map(c => c.id);
                     const allCustomers = await db.query('SELECT id,name,image FROM customers WHERE id!=ALL($1::int[]) ORDER BY id DESC', [selectedIds]);
                     const chatList = [...recentList.rows, ...allCustomers.rows];
@@ -72,9 +88,9 @@ class Messages {
             }
             else {
                 if (required === 'sellers') {
-                    const recentList = await db.query("SELECT s.s_id AS id ,s.s_name AS name ,s.s_image AS image ,max(sa.created_at) FROM seller_info AS s JOIN seller_admin AS sa ON s.s_id = sa.seller_id  WHERE sa.admin_id = $1 GROUP BY (s.s_id,s.s_name,s.s_image) ORDER BY MAX(sa.created_at)", [id]);
+                    const recentList = await db.query("SELECT s.s_id AS id ,s.s_name AS name ,s.s_image AS image ,max(sa.created_at) FROM seller_info AS s JOIN seller_admin AS sa ON s.s_id = sa.seller_id  WHERE sa.admin_id = $1 GROUP BY (s.s_id,s.s_name,s.s_image) ORDER BY MAX(sa.created_at) DESC", [id]);
                     const selectedIds = recentList.rows.map(s => s.id);
-                    const allCustomers = await db.query('SELECT s_id AS id, s_name AS name s_image AS image FROM seller_info WEHRE  id != ALL($1::int[]) ORDER BY id DESC', [selectedIds]);
+                    const allCustomers = await db.query('SELECT s_id AS id, s_name AS name, s_image AS image FROM seller_info WHERE  s_id != ALL($1::int[]) ORDER BY id DESC', [selectedIds]);
                     const chatList = [...recentList.rows, ...allCustomers.rows];
                     if (chatList.length > 0) {
                         return returnRes(res, 200, { message: "fetching success", chatList: chatList });
@@ -89,7 +105,7 @@ class Messages {
             }
         }
         catch (err) {
-            // console.log(err)
+            console.log(err)
             return returnRes(res, 500, { message: "Internal Server Error" })
         }
     }
@@ -108,6 +124,27 @@ class Messages {
             catch (err) {
                 // console.log(err);
                 return returnRes(res, 500, { message: "Internal Server Error" })
+            }
+        }
+        else {
+            return returnRes(res, 403, { message: "Access denied. You do not have permission." });
+        }
+    }
+    sendSellerAdminMsg = async (req, res) => {
+        const role = req.role;
+        const id = req.id;
+        if (role === 'admin' || role === 'seller') {
+            try {
+                const sellerId = (role === 'seller') ? id : req.body.sellerId;
+                const adminId = (role === 'seller') ? req.body.adminId : id;
+
+                const { msgData } = req.body;
+                await db.query("INSERT INTO seller_admin (seller_id,admin_id,sender,msg) VALUES($1,$2,$3,$4)", [sellerId, adminId, role, msgData]);
+                return returnRes(res, 200, { message: "Success" });
+            }
+            catch (err) {
+                // console.log(err);
+                return returnRes(res, 500, { message: "Internal Server Error" });
             }
         }
         else {

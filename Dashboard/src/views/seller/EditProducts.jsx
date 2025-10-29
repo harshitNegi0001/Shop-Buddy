@@ -22,6 +22,7 @@ function EditProduct() {
         prodDesc: "",
         oldImage: []
     });
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     const [images, setImages] = useState([]);
     const [imageShow, setImageShow] = useState([]);
     useEffect(() => {
@@ -32,7 +33,7 @@ function EditProduct() {
 
         try {
             setLoader(true);
-            const response = await fetch(`http://localhost:5000/api/get-product-detail?productId=${productId}`);
+            const response = await fetch(`${Backend_Port}/api/get-product-detail?productId=${productId}`);
             const result = await response.json();
             setLoader(false);
             if (!response.ok) {
@@ -63,7 +64,7 @@ function EditProduct() {
     const getCategories = async () => {
         try {
             setLoader(true);
-            const response = await fetch('http://localhost:5000/api/get-category', {
+            const response = await fetch(`${Backend_Port}/api/get-category`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -136,7 +137,7 @@ function EditProduct() {
                     formData.append("image", file);
                 });
                 setLoader(true);
-                const response = await fetch('http://localhost:5000/api/edit-product', {
+                const response = await fetch(`${Backend_Port}/api/edit-product`, {
                     method: "POST",
 
                     body: formData,

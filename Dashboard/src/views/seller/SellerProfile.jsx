@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 function SellerProfile() {
     const [loader, setLoader] = useState(false);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     const [state, setState] = useState({
         shopName: '',
         postalCode: '',
@@ -22,7 +23,7 @@ function SellerProfile() {
     const getSellerDetail = async () => {
         try {
             setLoader(true);
-            const response = await fetch("http://localhost:5000/api/get-user", {
+            const response = await fetch(`${Backend_Port}/api/get-user`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -51,7 +52,7 @@ function SellerProfile() {
             try {
 
                 setLoader(true);
-                const response = await fetch('http://localhost:5000/api/update-profile', {
+                const response = await fetch(`${Backend_Port}/api/update-profile`, {
                     method: "POST",
                     body: formData,
                     credentials: "include"
@@ -85,7 +86,7 @@ function SellerProfile() {
         if (shopName && postalCode && district && stateName && country) {
             try {
                 setLoader(true);
-                const response = await fetch('http://localhost:5000/api/add-shop', {
+                const response = await fetch(`${Backend_Port}/api/add-shop`, {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"

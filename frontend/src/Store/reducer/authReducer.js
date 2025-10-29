@@ -70,6 +70,7 @@ const authReducer = createSlice({
                 state.userInfo = action.payload.userInfo,
                 state.userRole = action.payload.userRole,
                 state.isLoading = false
+                // console.log(action.payload.userId,action.payload.userInfo,action.payload.userRole)
             socket.connect();
         },
         setState: (state, action) => {

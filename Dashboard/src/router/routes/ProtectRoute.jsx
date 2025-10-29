@@ -32,29 +32,6 @@ function ProtectedRoute({ route, children }) {
                     return <Suspense fallback={null}>{children}</Suspense>
                 }
             }
-            // if(userInfo.s_role==='seller'){
-            //     console.log(userInfo.s_role," ke andr")
-            //     if(userInfo.s_status === route.status  ||(Array.isArray(route.visibility) && route.visibility.includes(userInfo.s_status))){
-            //         console.log(userInfo.s_status," ke andr")
-            //         return <Suspense fallback={null}>{children}</Suspense>
-
-            //     }
-            //     // else{
-            //     //     if(userInfo.s_status==='pending'){
-            //     //         return <Navigate to={'/seller/account-pending'} replace />
-            //     //     }
-            //     //     else{
-            //     //         return <Navigate to={'/seller/account-deactive'} replace />
-            //     //     }
-            //     // }
-            // }
-
-
-            // else if(userInfo.role==='admin'){
-            //     return <Suspense fallback={null}>{children}</Suspense>
-            // } 
-
-
         }
         else {
             return <Navigate to={'/unauthorized'} replace />

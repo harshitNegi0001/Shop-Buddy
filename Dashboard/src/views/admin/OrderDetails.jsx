@@ -1,11 +1,46 @@
+import { useParams } from 'react-router-dom';
 import sampleImage from '../../assets/image-sample.png'
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 function OrderDetails() {
+    const { orderId } = useParams();
+    const [orderDetails, setOrderDetails] = useState([]);
+    const [orderStatus, setOrderStatus] = useState('');
+    const [customerAdd, setCustomerAdd] = useState({})
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
+    useEffect(() => {
+        if (orderId) {
+            getOrderDetail()
+        }
+    }, [orderId]);
+
+
+    const getOrderDetail = async () => {
+        try {
+            const response = await fetch(`${Backend_Port}/api/get-order-detail?orderId=${orderId}`, {
+                method: 'GET',
+                credentials: "include"
+            });
+            const result = await response.json();
+            if (response.ok) {
+                console.log(result.orderDetail)
+                setOrderDetails(result.orderDetail);
+                setOrderStatus(result.orderDetail[0].order_status);
+                setCustomerAdd(result.orderDetail[0].customer_address)
+            }
+            else {
+                toast.error("Error! " + result.message);
+            }
+        } catch (err) {
+            toast.error("Error! " + err.message);
+        }
+    }
     return (
         <div className="order-details-container" style={{ width: "90%", boxSizing: "border-box", padding: "15px 20px", borderRadius: "15px", backgroundColor: "rgb(132, 203, 250)", margin: "20px 0px", display: "flex", flexDirection: "column" }}>
             <div className="order-detail-header" style={{ width: "100%", boxSizing: "border-box", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span >Orders Details</span>
-                <select name="order-status" id="order-status" style={{ width: "120px", background: "none", border: "2px solid black", borderRadius: "10px", height: "33px", textAlign: "center", outline: "none" }}>
+                <select name="order-status" value={orderStatus.toLowerCase()} onChange={(e) => setOrderStatus(e.target.value)} id="order-status" style={{ width: "120px", background: "none", border: "2px solid black", borderRadius: "10px", height: "33px", textAlign: "center", outline: "none" }}>
                     <option value="pending">Pending</option>
                     <option value="processing">Processing</option>
                     <option value="warehouse">Warehouse</option>
@@ -13,56 +48,43 @@ function OrderDetails() {
                     <option value="cancelled">Cancelled</option>
                 </select>
             </div>
-            <div className="order-detail-main" style={{  boxSizing: "border-box", marginTop: "15px", padding: "5px 0px", display: "flex", flexWrap: "wrap", gap: "15px", justifyContent: "center" }}>
-                <div className="od-main-left" style={{  width: "260px" }}>
-                    <div style={{ display: "flex", gap: "10px", fontSize: "14px" }}><span>#454545</span><span>3 may 2025</span></div>
-                    <div style={{ fontSize: "14px", fontWeight: "bold" }}>Delivered to : Raju Dhami</div>
-                    <div style={{ fontSize: "12px" }}>47 W 13th St, New York, NY 10011, USA </div>
-                    <div style={{ fontSize: "14px" }}>Payment status : <span style={{ fontWeight: "600" }}>Paid</span></div>
-                    <div style={{ fontSize: "14px" }}>Price : $199</div>
-                    <div>
-                        <div style={{ backgroundColor: "var(--mess-outer)", fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", marginTop: "10px", height: "70px", borderRadius: "10px", color: "white", alignItems: "center" }}>
-                            <img src={sampleImage} style={{ width: "40px",borderRadius:"20px" }} alt="dp" />
-                            <div style={{ display: 'flex', flexDirection: "column" }}>
-                                <span>Long t-shirt</span>
-                                <span>Brand : MegaWear</span>
-                                <span>Quantity : 2</span>
+            <div className="order-detail-main" style={{ boxSizing: "border-box", marginTop: "15px", padding: "5px 0px", display: "flex", flexWrap: "wrap", gap: "15px", justifyContent: "center" }}>
+                <div className="od-main-left" style={{ width: "260px" }}>
+                    <div style={{ display: "flex", gap: "10px", fontSize: "14px" }}><span>#{orderDetails?.[0]?.order_id}</span><span>{
+                        new Date(orderDetails?.[0]?.ordered_date.replace(" ", "T"))
+                            .toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                            .replaceAll("/", " ")
+                    }</span></div>
+                    <div style={{ fontSize: "14px", fontWeight: "bold" }}>Deliver to : {orderDetails?.[0]?.customer_name}</div>
+                    <div style={{ fontSize: "12px" }}>{customerAdd.houseNo} {customerAdd.cityName}, {customerAdd.pincode} {customerAdd.district} {customerAdd.state}  </div>
+                    <div style={{ fontSize: "14px" }}>Payment status : <span style={{ fontWeight: "600" }}>{orderDetails?.[0]?.payment_status}</span></div>
+                    <div style={{ fontSize: "14px" }}>Price : ₹{orderDetails?.[0]?.total_cost}</div>
+                    {orderDetails.map((freq, j) => <div key={j}>
+                        {freq.products.map((p, i) => <div key={i} style={{ backgroundColor: "var(--mess-outer)", fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", marginTop: "10px", height: "70px", borderRadius: "10px", color: "white", alignItems: "center" }}>
+                            <img src={p?.images[0]} style={{ width: "40px", height: "40px", borderRadius: "5px", backgroundColor: "white", objectFit: "contain" }} alt="img" />
+                            <div style={{ display: 'flex', flexDirection: "column", width: "calc(100% - 50px)" }}>
+                                <span style={{ width: "100%", textWrap: "nowrap", overflow: "hidden", textOverflow: 'ellipsis' }}>{p.name}</span>
+                                <span>Brand : {p.brand}</span>
+                                <span>Quantity : {freq.quantity[freq.products_id.indexOf(p.id)]}</span>
                             </div>
-                        </div>
-                        <div style={{ backgroundColor: "var(--mess-outer)", fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", marginTop: "10px", height: "70px", borderRadius: "10px", color: "white", alignItems: "center" }}>
-                            <img src={sampleImage} style={{ width: "40px",borderRadius:"20px" }} alt="dp" />
-                            <div style={{ display: 'flex', flexDirection: "column" }}>
-                                <span>Long t-shirt</span>
-                                <span>Brand : MegaWear</span>
-                                <span>Quantity : 2</span>
-                            </div>
-                        </div>
-                    </div>
+                        </div>)}
+
+                    </div>)}
                 </div>
-                <div className="ad-main-right" style={{  width: "calc( 100% - 300px)", minWidth: "260px", display: "flex", alignItems: "center" }}>
-                    <div style={{ width: "100%", boxSizing: "border-box", padding: "5px", backgroundColor: "var(--mess-outer)",borderRadius:"10px" }}>
-                        <div style={{ display: "flex", flexDirection: "column",color:"white" }}>
-                            <span>Seller 1 order : Pending</span>
-                            <div style={{ fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", height: "70px", alignItems: "center" }}>
-                                <img src={sampleImage} style={{ width: "40px" ,borderRadius:"20px" }} alt="dp" />
-                                <div style={{ display: 'flex', flexDirection: "column" }}>
-                                    <span>Long t-shirt</span>
-                                    <span>Brand : MegaWear</span>
-                                    <span>Quantity : 2</span>
+                <div className="ad-main-right" style={{ width: "calc( 100% - 300px)", minWidth: "260px", display: "flex", alignItems: "center" }}>
+                    <div style={{ width: "100%", boxSizing: "border-box", padding: "5px", backgroundColor: "var(--mess-outer)", borderRadius: "10px" }}>
+                        {orderDetails.map((freq, i) => <div key={i} style={{ display: "flex", flexDirection: "column", color: "white" }}>
+                            <span>{freq.seller_name}'s order : {freq.order_status}</span>
+                            {freq.products.map((p, j) => <div key={j} style={{ fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", height: "70px", alignItems: "center" }}>
+                                <img src={p?.images[0]} style={{ width: "40px", height: "40px", borderRadius: "5px", backgroundColor: "white", objectFit: "contain" }} alt="img" />
+                                <div style={{ display: 'flex', flexDirection: "column", width: "calc(100% - 50px)" }}>
+                                    <span style={{ width: "100%", textWrap: "nowrap", overflow: "hidden", textOverflow: 'ellipsis' }}>{p.name}</span>
+                                    <span>Brand : {p.brand}</span>
+                                    <span>Quantity : {freq.quantity[freq.products_id.indexOf(p.id)]}</span>
                                 </div>
-                            </div>
-                        </div>
-                         <div style={{ display: "flex", flexDirection: "column",color:"white" }}>
-                            <span>Seller 2 order : Pending</span>
-                            <div style={{ fontSize: "12px", display: "flex", width: "100%", boxSizing: "border-box", padding: "5px", gap: "5px", height: "70px", alignItems: "center" }}>
-                                <img src={sampleImage} style={{ width: "40px",borderRadius:"20px" }} alt="dp" />
-                                <div style={{ display: 'flex', flexDirection: "column" }}>
-                                    <span>Long t-shirt</span>
-                                    <span>Brand : MegaWear</span>
-                                    <span>Quantity : 2</span>
-                                </div>
-                            </div>
-                        </div>
+                            </div>)}
+                        </div>)}
+
                     </div>
                 </div>
 

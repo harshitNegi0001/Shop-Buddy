@@ -9,6 +9,7 @@ import loading from '../../assets/loading3.webp';
 
 function AddProduct() {
     const [loader,setLoader] = useState(false);
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     const [state, setState] = useState({
         prodName: "",
         brandName: "",
@@ -24,7 +25,7 @@ function AddProduct() {
     const getCategories = async () => {
         try {
             setLoader(true);
-            const response = await fetch('http://localhost:5000/api/get-category', {
+            const response = await fetch(`${Backend_Port}/api/get-category`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -93,7 +94,7 @@ function AddProduct() {
                     formData.append("image", file);
                 });
                 setLoader(true);
-                const response = await fetch('http://localhost:5000/api/add-product/', {
+                const response = await fetch(`${Backend_Port}/api/add-product/`, {
                     method: "POST",
                     
                     body: formData,
