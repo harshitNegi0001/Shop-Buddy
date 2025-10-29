@@ -1,4 +1,3 @@
-// db.js
 import pkg from "pg";
 import dotenv from "dotenv";
 
@@ -12,11 +11,22 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT),
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: { rejectUnauthorized: false } // 🔐 Aiven and most cloud DBs need this
+  ssl: { rejectUnauthorized: false } // 🔐 Required for Aiven
 });
 
+// Test initial connection
 pool.connect()
-  .then(() => console.log("✅ PostgreSQL connected successfully"))
-  .catch((err) => console.error("❌ PostgreSQL connection error:", err.message));
+  .then(client => {
+    console.log("✅ PostgreSQL connected successfully");
+    client.release();
+  })
+  .catch(err => {
+    console.error("❌ PostgreSQL connection error:", err.message);
+  });
+
+// Listen for runtime errors (prevents Node crash)
+pool.on('error', err => {
+  console.error('Unexpected PostgreSQL error:', err);
+});
 
 export default pool;
