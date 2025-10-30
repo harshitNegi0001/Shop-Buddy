@@ -25,10 +25,10 @@ function Home() {
 
     const getProducts = async () => {
         try {
-            setIsLoading(true);
+            // setIsLoading(true);
             const response = await fetch(`${BACKEND_PORT}/api/get-products?searchValue=${searchValue}&parPage=${10}&currPage=${page}`);
             const result = await response.json();
-            setIsLoading(false);
+            // setIsLoading(false);
             if (response.ok) {
                 if (result.products.length === 0) {
 
@@ -43,7 +43,7 @@ function Home() {
                 toast.error("Error! " + result.message);
             }
         } catch (err) {
-            setIsLoading(false);
+            // setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }

@@ -13,7 +13,7 @@ import { app,server } from './utiles/io.js';
 const port = 5000;
 
 app.use(cors({
-    origin:['http://localhost:5173'],
+    origin:['http://localhost:5173','https://shop-buddy-pi.vercel.app'],
     credentials:true
 }));
 

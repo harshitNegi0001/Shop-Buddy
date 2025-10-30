@@ -10,7 +10,7 @@ import { BsShop } from "react-icons/bs";
 import { IoChatbubblesOutline } from "react-icons/io5";
 
 import InfiniteScroll from 'react-infinite-scroll-component';
-
+name
 
 function ProductDetail() {
     const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +19,7 @@ function ProductDetail() {
     const navigate = useNavigate()
     const [selectedImg, setSelectedImg] = useState('');
     const [topRating, setTopRating] = useState([]);
+    // console.log(topRating)
     const [similarRatings, setSimilarRatings] = useState([])
     const [priceDiscount, setPriceDiscount] = useState({
         maxPrice: 0,
@@ -193,7 +194,7 @@ function ProductDetail() {
 
                                 <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" }}>
                                     <img src={cmnt.userDetail?.image} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
-                                    <span>{cmnt.userDetail.name}</span>
+                                    <span>{cmnt?.userDetail?.name}</span>
                                 </div>
                                 <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" ,marginBottom:"10px"}}>
                                     <span className="prod-rating">{cmnt.star} <FaStar /></span>

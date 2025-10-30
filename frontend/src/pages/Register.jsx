@@ -69,7 +69,7 @@ function Register() {
                     toast.success(result.message);
                     const decodeToken = jwtDecode(result.token);
                     
-                    console.log("we are here 1");
+                 
                     dispatch(login({ userId: decodeToken.id, userRole: decodeToken.role, userInfo: result.userInfo }));
                     navigate('/');
                     // login(result.token,decodeToken.role,decodeToken.id);

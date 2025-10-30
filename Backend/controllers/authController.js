@@ -26,8 +26,8 @@ class AuthController {
         });
         res.cookie('accessToken', token, {
           httpOnly: true,
-          secure: false,
-          sameSite: 'Lax',
+          secure: true,
+          sameSite: 'none',
           expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         })
         return returnRes(res, 200, {
@@ -113,8 +113,8 @@ class AuthController {
       });
       res.cookie('accessToken', token, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'Lax',
+        secure: true,
+        sameSite: 'none',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       })
       return returnRes(res, 201, { message: "Registered Successful", token: token });
@@ -142,8 +142,8 @@ class AuthController {
         })
         res.cookie('accessToken', token, {
           httpOnly: true,
-          secure: false,
-          sameSite: 'Lax',
+          secure: true,
+          sameSite: 'none',
           expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
 
@@ -250,14 +250,14 @@ class AuthController {
           })
           res.cookie('accessToken', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'Lax',
+            secure: true,
+            sameSite: 'none',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           });
           res.cookie('isAuth', true, {
             httpOnly: false,
-            secure: false,
-            sameSite: 'Lax',
+            secure: true,
+            sameSite: 'none',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           })
           return returnRes(res, 200, { message: "Welcome back", token: token, userInfo: user.rows[0] });
@@ -277,14 +277,14 @@ class AuthController {
   logout = async (req, res) => {
     res.cookie('accessToken', '', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
+      secure: true,
+      sameSite: 'none',
       expires: new Date(0),
     })
     res.cookie('isAuth', false, {
       httpOnly: false,
-      secure: false,
-      sameSite: 'Lax',
+      secure: true,
+      sameSite: 'none',
       expires: new Date(0),
     })
     return returnRes(res, 200, { message: "Successfully Logout" });
@@ -334,14 +334,14 @@ class AuthController {
       });
       res.cookie('accessToken', token, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'Lax',
+        secure: true,
+        sameSite: 'none',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       res.cookie('isAuth', true, {
         httpOnly: false,
-        secure: false,
-        sameSite: 'Lax',
+        secure: true,
+        sameSite: 'none',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       // console.log(customer)
