@@ -7,9 +7,9 @@ const backendPort = import.meta.env.VITE_BACKEND_PORT;
 export const getInfo = createAsyncThunk(
     'auth/getInfo',
     async (_, thunkAPI) => {
-        const isAuth = Cookies.get('isAuth')
+        // const isAuth = Cookies.get('isAuth');
 
-        if (isAuth) {
+        // if (isAuth) {
 
 
             try {
@@ -27,7 +27,7 @@ export const getInfo = createAsyncThunk(
                     }
                 }
                 else {
-                    toast.error("Error! " + result.message);
+                    // toast.error("Error! " + result.message);
                     return thunkAPI.rejectWithValue({
                         userId: null,
                         userRole: null,
@@ -44,14 +44,14 @@ export const getInfo = createAsyncThunk(
                     isLoading: false
                 })
             }
-        }
-        else {
-            return thunkAPI.rejectWithValue({
-                userId: null,
-                userRole: null,
-                isLoading: false
-            })
-        }
+        // }
+        // else {
+        //     return thunkAPI.rejectWithValue({
+        //         userId: null,
+        //         userRole: null,
+        //         isLoading: false
+        //     })
+        // }
 
     }
 )
