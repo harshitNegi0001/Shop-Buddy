@@ -91,7 +91,7 @@ function SellerToAdmin() {
 
                 socket.emit('send-message', (msg))
 
-                setIsLoading(true);
+                // setIsLoading(true);
                 const response = await fetch(`${Backend_port}/api/msg/send-seller-admin`, {
                     method: "POST",
                     headers: {
@@ -104,7 +104,7 @@ function SellerToAdmin() {
                     credentials: "include"
                 });
                 const result = await response.json();
-                setIsLoading(false);
+                // setIsLoading(false);
                 if (response.ok) {
                     toast.success("Sent");
                     getAdmin();
@@ -115,7 +115,7 @@ function SellerToAdmin() {
                 }
             }
             catch (err) {
-                setIsLoading(false);
+                // setIsLoading(false);
                 toast.error("Error! " + err.message);
             }
         }

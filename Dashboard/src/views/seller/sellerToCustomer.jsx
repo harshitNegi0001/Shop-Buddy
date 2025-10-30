@@ -125,7 +125,7 @@ function SellerToCustomer() {
 
                 socket.emit('send-message', (msg))
 
-                setIsLoading(true);
+                // setIsLoading(true);
                 const response = await fetch(`${Backend_port}/api/msg/send-seller-customer`, {
                     method: "POST",
                     headers: {
@@ -138,7 +138,7 @@ function SellerToCustomer() {
                     credentials: "include"
                 });
                 const result = await response.json();
-                setIsLoading(false);
+                // setIsLoading(false);
                 if (response.ok) {
                     toast.success("Sent");
                     getCustomerList();
@@ -149,7 +149,7 @@ function SellerToCustomer() {
                 }
             }
             catch (err) {
-                setIsLoading(false);
+                // setIsLoading(false);
                 toast.error("Error! " + err.message);
             }
         }
