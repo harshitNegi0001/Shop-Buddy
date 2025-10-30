@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import sellerImage from '../../assets/sellerSamplePhoto.jpg'
+// import sellerImage from '../../assets/sellerSamplePhoto.jpg'
 import '../../stylesheet/sellerDetails.css';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';

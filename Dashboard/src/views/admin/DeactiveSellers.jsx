@@ -1,4 +1,4 @@
-import '../../stylesheet/Sellers.css';
+import '../../stylesheet/sellers.css';
 import { useState, useEffect } from 'react';
 import searchIcon from '../../assets/searchIcon.png';
 import Pagination from "../Pagination";
