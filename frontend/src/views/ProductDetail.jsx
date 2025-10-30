@@ -8,9 +8,9 @@ import { TbShoppingCart } from "react-icons/tb";
 import { FaStar } from "react-icons/fa";
 import { BsShop } from "react-icons/bs";
 import { IoChatbubblesOutline } from "react-icons/io5";
-
+import sampleImg from '../assets/image-sample.png'
 import InfiniteScroll from 'react-infinite-scroll-component';
-name
+
 
 function ProductDetail() {
     const [isLoading, setIsLoading] = useState(false);
@@ -193,8 +193,8 @@ function ProductDetail() {
                             <div key={i} style={{ display: "flex", flexDirection: "column", borderBottom: "2px solid var(--highlight)", gap: "5px" }}>
 
                                 <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" }}>
-                                    <img src={cmnt.userDetail?.image} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
-                                    <span>{cmnt?.userDetail?.name}</span>
+                                    <img src={cmnt.userDetail?.image||sampleImg} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
+                                    <span>{cmnt?.userDetail?.name||'A shopbuddy user'}</span>
                                 </div>
                                 <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" ,marginBottom:"10px"}}>
                                     <span className="prod-rating">{cmnt.star} <FaStar /></span>

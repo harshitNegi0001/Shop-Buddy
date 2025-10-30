@@ -102,7 +102,7 @@ function SellerChat() {
                     msg: sendMsgData
                 }
                 socket.emit('send-message', (msg))
-                setIsLoading(true);
+                // setIsLoading(true);
                 const response = await fetch(`${Backend_port}/api/msg/send-seller-customer`, {
                     method: "POST",
                     headers: {
@@ -115,7 +115,7 @@ function SellerChat() {
                     credentials: "include"
                 });
                 const result = await response.json();
-                setIsLoading(false);
+                // setIsLoading(false);
                 if (response.ok) {
                     toast.success("Sent");
                     getChatList();
@@ -126,7 +126,7 @@ function SellerChat() {
                 }
             }
             catch (err) {
-                setIsLoading(false);
+                // setIsLoading(false);
                 toast.error("Error! " + err.message);
             }
         }
