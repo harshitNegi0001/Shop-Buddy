@@ -13,7 +13,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';
 import { Rating, Star } from '@smastrom/react-rating';
 import '@smastrom/react-rating/style.css';
-import { startSession } from "mongoose";
 
 
 function ProductDetail() {
