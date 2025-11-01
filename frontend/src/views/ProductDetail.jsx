@@ -10,6 +10,10 @@ import { BsShop } from "react-icons/bs";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import sampleImg from '../assets/image-sample.png'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useSelector } from 'react-redux';
+import { Rating, Star } from '@smastrom/react-rating';
+import '@smastrom/react-rating/style.css';
+import { startSession } from "mongoose";
 
 
 function ProductDetail() {
@@ -38,10 +42,15 @@ function ProductDetail() {
             one: 0
         }
     })
+    const { userInfo } = useSelector(state => state.auth);
+const [userFeedback,setUserFeedback] = useState('');
     const [products, setProducts] = useState([]);
     const [hasmore, setHasmore] = useState(true);
     const [page, setPage] = useState(1);
     const [productDetails, setProductDetails] = useState({});
+    const [userRating, setUserRating] = useState(0) // Initial value
+
+
     useEffect(() => {
         if (prodId) {
             getProductDetail();
@@ -50,6 +59,39 @@ function ProductDetail() {
     useEffect(() => {
         if (productDetails.name) { getSimilarProd(); }
     }, [productDetails])
+    const submitRating = async()=>{
+        if(userRating>0){
+            try {
+                const response = await fetch(`${Backend_port}/api/rate-prod`,{
+                    method:'POST',
+                    headers:{
+                        'Content-type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        prodId:prodId,
+                        comments:{
+                            star:userRating,
+                            comment:userFeedback,
+                            customer_id:userInfo.id
+                        }
+                    }),
+                    credentials:'include'
+                })
+                const result = await response.json();
+                if(response.ok){
+                    toast("Thank you for ratings", { icon: "❤"});
+                }
+                else{
+                    toast.error('Error! '+result.message);
+                }
+            } catch (err) {
+                toast.error('Error! '+err.message);
+            }
+        }
+        else{
+            toast.error('Please rate product first');
+        }
+    }
     const addToCart = async () => {
         try {
             setIsLoading(true);
@@ -146,6 +188,19 @@ function ProductDetail() {
                     <button className="add-to-cart" onClick={() => addToCart()}><TbShoppingCart /> Add to Cart</button>
                     <button className="buy-now-button" onClick={() => navigate('/buy-products', { state: { myCartProd: [productDetails], quantity: [1], grandtotal: ((productDetails.price * (1 - productDetails.discount / 100)) * (1.1)).toFixed(2), subtotal: (productDetails.price * (1 - productDetails.discount / 100)).toFixed(2) } })}><FaAnglesRight /> Buy Now</button>
                 </div>
+                <div style={{ width: "100%", height: "0px", margin: "10px 0px", border: "2px solid var(--highlight)", borderRadius: "5px" }}></div>
+                {userInfo && <div style={{ width: "100%",color:"var(--text)", boxSizing: "border-box", padding: '15px', backgroundColor: "var(--header)", borderRadius: "15px",display:"flex",flexDirection:"column",gap:'10px',alignItems:"center" }}>
+                    <span>Rate Us</span>
+                    <Rating style={{ maxWidth: "150px" }} value={userRating} onChange={setUserRating} itemStyles={{itemShapes:Star,activeFillColor:'#FFD700',inactiveFillColor:'#C0C0C0'}} />
+                    <div className="comment-box" style={{width:"100%",boxSizing:"border-box",display:"flex",flexDirection:"column",gap:'10px',alignItems:"center"}}>
+                        <div style={{width:'100%',display:'flex',gap:'5px',justifyContent:"center",alignItems:'center',flexWrap:'wrap'}}>
+                            <span style={{fontSize:"12px"}}>Feedback</span>
+                            <input type="text" value={userFeedback} onChange={(e)=>setUserFeedback(e.target.value)} style={{width:'240px',background:'none',border:'2px solid var(--text)',color:'var(--text)',padding:'0px 5px',outlineColor:'var(--primary)',borderRadius:'5px',height:'35px'}}/>
+                            
+                        </div>
+                        <button style={{marginTop:"15px",width:'100px',height:'30px',backgroundColor:"var(--primary)",border:'none',color:'var(-text)',borderRadius:"10px",fontWeight:'500'}} onClick={submitRating}>Submit</button>
+                    </div>
+                </div>}
             </div>
             <div className="prod-other-info-container">
                 <div className="prod-basic-info">
@@ -193,12 +248,12 @@ function ProductDetail() {
                             <div key={i} style={{ display: "flex", flexDirection: "column", borderBottom: "2px solid var(--highlight)", gap: "5px" }}>
 
                                 <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" }}>
-                                    <img src={cmnt.userDetail?.image||sampleImg} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
-                                    <span>{cmnt?.userDetail?.name||'A shopbuddy user'}</span>
+                                    <img src={cmnt.userDetail?.image || sampleImg} style={{ width: "35px", height: "35px", borderRadius: "20px", objectFit: "cover" }} alt="" />
+                                    <span>{cmnt?.userDetail?.name || 'A shopbuddy user'}</span>
                                 </div>
-                                <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)" ,marginBottom:"10px"}}>
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center", color: "var(--text)", marginBottom: "10px" }}>
                                     <span className="prod-rating">{cmnt.star} <FaStar /></span>
-                                    <span style={{fontSize:"12px"}}>{cmnt.comment}</span>
+                                    <span style={{ fontSize: "12px" }}>{cmnt.comment}</span>
                                 </div>
                             </div>)
                     }

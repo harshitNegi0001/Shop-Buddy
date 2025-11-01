@@ -5,6 +5,7 @@
 
 @media(prefers-color-scheme:dark) {
   :root {
+    --toaster:rgb(1, 62, 65);
     --btn:#ff5e00;
     --muted-text:rgb(170, 168, 168);
     --toast-error:rgb(56, 27, 27);
@@ -27,6 +28,7 @@
 
 @media(prefers-color-scheme: light) {
   :root {
+    --toaster:rgb(155, 243, 248);
     --offers-main:rgb(177, 233, 233);
     --muted-text:rgb(34, 34, 34);
     --card-bg:#FFFFFF;

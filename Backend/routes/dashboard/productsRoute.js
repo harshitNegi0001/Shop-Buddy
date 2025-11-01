@@ -9,7 +9,7 @@ router.post('/add-product',authMiddleware,Product.addProduct);
 router.get('/get-products',Product.getProducts);
 router.get('/get-product-detail',Product.getProductDetail);
 router.post('/edit-product',authMiddleware,Product.editProduct);
-router.post('/rate-prod',Product.rateProd)
+router.post('/rate-prod',authMiddleware,Product.rateProd);
 
 router.get('/get-offer-highlight',Product.getOfferHighlight)
 router.post('/add-to-cart',authMiddleware,Product.addToCart);

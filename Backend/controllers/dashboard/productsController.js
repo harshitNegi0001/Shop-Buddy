@@ -148,34 +148,35 @@ class Product {
     }
     rateProd = async (req, res) => {
         const role = req.role;
-        // if(role==='customer'){
-        const id = 1;
-        const { prodId, comment } = req.body;
-        try {
+        if (role === 'customer') {
+            const id = req.id;
+            const { prodId, comments } = req.body;
+            try {
 
-            const oldCom = await db.query('SELECT comments FROM products WHERE id = $1', [prodId]);
+                const oldCom = await db.query('SELECT comments FROM products WHERE id = $1', [prodId]);
 
-            const isAlready = oldCom.rows[0].comments.find(i => i.customer_id == id)
-            if (!isAlready) {
-                const updatedCom = [...oldCom.rows[0].comments, comment];
-                await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
+                const isAlready = oldCom.rows[0].comments.find(i => i.customer_id == id);
+
+                if (!isAlready) {
+                    const updatedCom = [...oldCom.rows[0].comments, comments];
+                    await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
+                }
+                else {
+                    const filteredCom = oldCom.rows[0].comments.filter(c => c.customer_id != id);
+                    const updatedCom = [...filteredCom, comments];
+                    await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
+                }
+
+
+                return returnRes(res, 200, { message: "Success" });
+            } catch (err) {
+                console.log(err);
+                return returnRes(res, 500, { message: "Internal Server Error" });
             }
-            else {
-                const filteredCom = oldCom.rows[0].comments.filter(c => c.customer_id != id);
-                const updatedCom = [...filteredCom, comment];
-                await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
-            }
-
-
-            return returnRes(res, 200, { message: "Success" });
-        } catch (err) {
-            console.log(err);
-            return returnRes(res, 500, { message: "Internal Server Error" });
         }
-        // }
-        // else{
-        //     return returnRes(res,403,{message:"You are not allowed to access"});
-        // }
+        else {
+            return returnRes(res, 403, { message: "You are not allowed to access" });
+        }
     }
     editProduct = async (req, res) => {
         const form = formidable({});
