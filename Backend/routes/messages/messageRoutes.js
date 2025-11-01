@@ -12,5 +12,7 @@ router.get('/get-chatlist',authMiddleware,Messages.getChatList);
 router.post('/send-seller-customer',authMiddleware,Messages.sendSellerCustomerMsg);
 router.post('/send-seller-admin',authMiddleware,Messages.sendSellerAdminMsg);
 
+router.get('/get-latest-msg',authMiddleware,Messages.getLatestMsg);
+
 
 export default router;

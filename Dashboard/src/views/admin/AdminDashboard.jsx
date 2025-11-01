@@ -7,10 +7,57 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import imageSample from "../../assets/image-sample.png";
 import { state } from "./dashboardChart";
 import '../../stylesheet/dashboard.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
 
 function AdminDashboard() {
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
+    const [latestMsg, setLatestMsg] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const navigate = useNavigate();
+    useEffect(() => {
+        getLatestMessage();
+        getOrders()
+    }, [])
+    const getLatestMessage = async () => {
+        try {
+            const response = await fetch(`${Backend_Port}/api/msg/get-latest-msg`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const result = await response.json();
+            if (response.ok) {
+                setLatestMsg(result.latestMsg);
+            }
+            else {
+                toast.error('Error! ' + result.message);
+            }
+        } catch (err) {
+            toast.error('Error! ' + err.message)
+        }
+    }
+    const getOrders = async () => {
+        try {
+            const response = await fetch(`${Backend_Port}/api/get-all-orders?parPage=${5}&&currPage=${1}`,
+                {
+                    method: 'GET',
+                    credentials: "include"
+                }
+            );
+            const result = await response.json();
 
+            if (response.ok) {
+                setOrders(result.orders);
+            }
+            else {
+                toast.error('Error! ' + result.message);
+            }
+
+        } catch (err) {
+            toast.error("Error! " + err.message);
+        }
+    }
     return (
         <div className="admin-dash" >
             <div className="upper-dash" >
@@ -69,55 +116,27 @@ function AdminDashboard() {
                         <Link to='live-chat' style={{ textDecoration: "none", color: "var(--text)", display: "flex", alignItems: "center" }}><span>View All</span><FaAngleDoubleRight /></Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "200px", margin: "30px 0px" }}>
-                        <div className="main-quick" >
-                            <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
+
+                        {latestMsg.map((msg, i) => <div key={i} className="main-quick" >
+                            <div className="pre-profile" onClick={() => navigate(`/admin/dashboard/live-chat/${msg.s_id}`)}>
+                                <img src={msg.s_image} alt="dp" style={{ width: "35px", height: '35px', objectFit: "cover", borderRadius: "20px" }} />
                             </div>
-                            <div className="pre-box" >
-                                <div>
-                                    <span >
-                                        Yogesh Jani
-                                    </span>
-                                </div>
-                                <div className="message-box" >
-                                    <p>How are you?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="main-quick" >
-                            <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
-                            </div>
-                            <div className="pre-box" >
+                            <div className="pre-box" onClick={() => navigate(`/admin/dashboard/live-chat/${msg.s_id}`)} style={{ cursor: 'pointer' }}>
                                 <div>
                                     <span>
-                                        Yogesh Jani
+                                        {msg.s_name}
                                     </span>
                                 </div>
                                 <div className="message-box" >
-                                    <p>hello</p>
+                                    <p>{msg.msg}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="main-quick" >
-                            <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
-                            </div>
-                            <div className="pre-box" >
-                                <div>
-                                    <span>
-                                        Piyush
-                                    </span>
-                                </div>
-                                <div className="message-box" >
-                                    <p>I am getting problems, Please help me </p>
-                                </div>
-                            </div>
-                        </div>
+                        </div>)}
+
                     </div>
                 </div>
             </div>
-            <div className="recent-order" style={{ width: "99%",  margin: "30px 0px", boxSizing: "border-box", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)", color: "var(--text)", borderRadius: "10px", fontSize: "12px" }}>
+            <div className="recent-order" style={{ width: "99%", margin: "30px 0px", boxSizing: "border-box", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)", color: "var(--text)", borderRadius: "10px", fontSize: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                     <span>
                         Recent Orders
@@ -126,50 +145,26 @@ function AdminDashboard() {
                 </div>
                 <div style={{ width: "98%", marginTop: "15px" }}>
                     <table style={{
-                        width: "100%", textAlign: "center",borderCollapse: "separate",borderSpacing: "0 10px"}}>
+                        width: "100%", textAlign: "center", borderCollapse: "separate", borderSpacing: "0 10px"
+                    }}>
                         <thead >
                             <tr >
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Order Id</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Price</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Payment Status</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Order Status</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Active</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Order Id</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Price</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Payment Status</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Order Status</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Active</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr><tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr><tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
+                            {orders.map((o,i)=><tr key={i}>
+                                <td>#{o.id}</td>
+                                <td>₹{o.total_cost}</td>
+                                <td>{o.payment_status}</td>
+                                <td>{o.order_status}</td>
+                                <td><Link style={{color:'greenyellow'}} to={`/admin/dashboard/orders/details/${o.id}`}>View</Link></td>
+                            </tr>)}
+                            
                         </tbody>
 
                     </table>

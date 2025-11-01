@@ -6,8 +6,13 @@ import { MdOutlinePendingActions } from "react-icons/md";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import imageSample from "../../assets/image-sample.png";
 import '../../stylesheet/dashboard.css';
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
+
+
 function SellerDashboard (){
+
     const state = {
         series: [
             {
@@ -57,6 +62,52 @@ function SellerDashboard (){
                     }
                 }
             ]
+        }
+    }
+    const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
+    const [latestMsg, setLatestMsg] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const navigate = useNavigate();
+    useEffect(() => {
+        getLatestMessage();
+        getOrders();
+    }, [])
+    const getLatestMessage = async () => {
+        try {
+            const response = await fetch(`${Backend_Port}/api/msg/get-latest-msg`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const result = await response.json();
+            if (response.ok) {
+                setLatestMsg(result.latestMsg);
+            }
+            else {
+                toast.error('Error! ' + result.message);
+            }
+        } catch (err) {
+            toast.error('Error! ' + err.message)
+        }
+    }
+    const getOrders = async () => {
+        try {
+            const response = await fetch(`${Backend_Port}/api/get-sellers-orders?parPage=${5}&&currPage=${1}`,
+                {
+                    method: 'GET',
+                    credentials: "include"
+                }
+            );
+            const result = await response.json();
+
+            if (response.ok) {
+                setOrders(result.orders);
+            }
+            else {
+                toast.error('Error! ' + result.message);
+            }
+
+        } catch (err) {
+            toast.error("Error! " + err.message);
         }
     }
     return(
@@ -117,51 +168,22 @@ function SellerDashboard (){
                         <Link to='chat-customer' style={{ textDecoration: "none", color: "var(--text)", display: "flex", alignItems: "center" }}><span>View All</span><FaAngleDoubleRight /></Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "200px", margin: "30px 0px" }}>
-                        <div className="main-quick" >
+                        {latestMsg.map((msg, i) =><div key={i} className="main-quick" >
                             <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
+                                <img src={msg.image} alt="dp" onClick={() => navigate(`/seller/dashboard/chat-customer/${msg.customer_id}`)} style={{ width: "35px", height: '35px', objectFit: "cover", borderRadius: "20px" }} />
                             </div>
-                            <div className="pre-box" >
+                            <div className="pre-box" onClick={() => navigate(`/seller/dashboard/chat-customer/${msg.customer_id}`)}>
                                 <div>
                                     <span >
-                                        Yogesh Jani
+                                        {msg.name}
                                     </span>
                                 </div>
                                 <div className="message-box" >
-                                    <p>How are you?</p>
+                                    <p>{msg.msg}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="main-quick" >
-                            <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
-                            </div>
-                            <div className="pre-box" >
-                                <div>
-                                    <span>
-                                        Yogesh Jani
-                                    </span>
-                                </div>
-                                <div className="message-box" >
-                                    <p>hello</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="main-quick" >
-                            <div className="pre-profile">
-                                <img src={imageSample} alt="dp" style={{ width: "25px", borderRadius: "15px" }} />
-                            </div>
-                            <div className="pre-box" >
-                                <div>
-                                    <span>
-                                        Piyush
-                                    </span>
-                                </div>
-                                <div className="message-box" >
-                                    <p>I am getting problems, Please help me </p>
-                                </div>
-                            </div>
-                        </div>
+                        </div>)}
+                        
                     </div>
                 </div>
             </div>
@@ -185,39 +207,14 @@ function SellerDashboard (){
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
-                            <tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr><tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr><tr>
-                                <td>10001</td>
-                                <td>₹100</td>
-                                <td>Pendding</td>
-                                <td>Pendding</td>
-                                <td>View</td>
-                            </tr>
+                            {orders.map((o,i)=><tr key={i}>
+                                <td>{o.id}</td>
+                                <td>₹{o.total_cost}</td>
+                                <td>{o.payment_status}</td>
+                                <td>{o.order_status}</td>
+                                <td><Link style={{color:'greenyellow'}} to={`/seller/dashboard/order/detail/${o.id}`}>View</Link></td>
+                            </tr>)}
+                            
                         </tbody>
 
                     </table>

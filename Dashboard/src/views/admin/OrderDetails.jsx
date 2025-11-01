@@ -56,7 +56,7 @@ function OrderDetails() {
                             .replaceAll("/", " ")
                     }</span></div>
                     <div style={{ fontSize: "14px", fontWeight: "bold" }}>Deliver to : {orderDetails?.[0]?.customer_name}</div>
-                    <div style={{ fontSize: "12px" }}>{customerAdd.houseNo} {customerAdd.cityName}, {customerAdd.pincode} {customerAdd.district} {customerAdd.state}  </div>
+                    <div style={{ fontSize: "12px" }}>{customerAdd?.houseNo} {customerAdd?.cityName}, {customerAdd?.pincode} {customerAdd?.district} {customerAdd?.state}  </div>
                     <div style={{ fontSize: "14px" }}>Payment status : <span style={{ fontWeight: "600" }}>{orderDetails?.[0]?.payment_status}</span></div>
                     <div style={{ fontSize: "14px" }}>Price : ₹{orderDetails?.[0]?.total_cost}</div>
                     {orderDetails.map((freq, j) => <div key={j}>

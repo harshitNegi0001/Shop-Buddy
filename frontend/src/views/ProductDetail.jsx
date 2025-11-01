@@ -19,10 +19,10 @@ function ProductDetail() {
     const [isLoading, setIsLoading] = useState(false);
     const Backend_port = import.meta.env.VITE_BACKEND_PORT;
     const { prodId } = useParams();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [selectedImg, setSelectedImg] = useState('');
     const [topRating, setTopRating] = useState([]);
-    // console.log(topRating)
+    
     const [similarRatings, setSimilarRatings] = useState([])
     const [priceDiscount, setPriceDiscount] = useState({
         maxPrice: 0,

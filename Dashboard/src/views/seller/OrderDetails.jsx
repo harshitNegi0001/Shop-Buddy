@@ -10,7 +10,7 @@ function OrderDetails() {
     const [customerAdd, setCustomerAdd] = useState({});
     const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     useEffect(() => {
-        console.log(orderId)
+        
         if (orderId) {
             getOrderDetail();
         }
@@ -25,7 +25,7 @@ function OrderDetails() {
             });
             const result = await response.json();
             if (response.ok) {
-                console.log(result.orderDetail);
+                
                 setOrderDetails(result.orderDetail);
                 setOrderStatus(result.orderDetail.order_status);
                 setCustomerAdd(result.orderDetail.customer_address)
@@ -58,7 +58,7 @@ function OrderDetails() {
                             .replaceAll("/", " ")
                     }</span></div>
                     <div style={{ fontSize: "14px", fontWeight: "bold" }}>Deliver to : {orderDetails?.customer_name}</div>
-                    <div style={{ fontSize: "12px" }}>{customerAdd.houseNo} {customerAdd.cityName}, {customerAdd.pincode} {customerAdd.district} {customerAdd.state}  </div>
+                    <div style={{ fontSize: "12px" }}>{customerAdd?.houseNo} {customerAdd?.cityName}, {customerAdd?.pincode} {customerAdd?.district} {customerAdd?.state}  </div>
                     <div style={{ fontSize: "14px" }}>Payment status : <span style={{ fontWeight: "600" }}>{orderDetails?.payment_status}</span></div>
                     <div style={{ fontSize: "14px" }}>Price : ₹{orderDetails?.total_cost}</div>
                     <div >

@@ -151,6 +151,28 @@ class Messages {
             return returnRes(res, 403, { message: "Access denied. You do not have permission." });
         }
     }
+    getLatestMsg = async (req, res) => {
+        const role = req.role;
+        const id = req.id;
+        if (role === 'admin') {
+            try {
+                const result = await db.query("SELECT c.*,s.s_name,s.s_image,s.s_id FROM seller_admin AS c JOIN seller_info AS s ON s.s_id=c.seller_id  WHERE c.admin_id = $1 AND c.sender = 'seller' ORDER BY c.id DESC  LIMIT 3", [id]);
+                return returnRes(res, 200, { message: 'Success', latestMsg: result.rows });
+            }
+            catch (err) {
+                return returnRes(res, 500, { message: 'Internal server error' });
+            }
+        }
+        else if (role === 'seller') {
+            try {
+                const result = await db.query("SELECT m.*,c.name,c.image FROM seller_customer AS m JOIN customers AS c ON c.id=m.customer_id  WHERE m.seller_id = $1 AND m.sender = 'customer' ORDER BY m.id DESC  LIMIT 3", [id]);
+                return returnRes(res, 200, { message: 'Success', latestMsg: result.rows });
+            }
+            catch (err) {
+                return returnRes(res, 500, { message: 'Internal server error' });
+            }
+        }
+    }
 }
 
 export default new Messages();
