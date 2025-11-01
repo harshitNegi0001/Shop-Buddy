@@ -6,13 +6,14 @@ import { MdOutlinePendingActions } from "react-icons/md";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import imageSample from "../../assets/image-sample.png";
 import '../../stylesheet/dashboard.css';
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
+import loadingGif from '../../assets/loading3.webp';
 
 
-function SellerDashboard (){
-
+function SellerDashboard() {
+    const [isLoading, setIsLoading] = useState(false);
     const state = {
         series: [
             {
@@ -74,11 +75,13 @@ function SellerDashboard (){
     }, [])
     const getLatestMessage = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_Port}/api/msg/get-latest-msg`, {
                 method: 'GET',
                 credentials: 'include'
             });
             const result = await response.json();
+            setIsLoading(false);
             if (response.ok) {
                 setLatestMsg(result.latestMsg);
             }
@@ -86,11 +89,13 @@ function SellerDashboard (){
                 toast.error('Error! ' + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error('Error! ' + err.message)
         }
     }
     const getOrders = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_Port}/api/get-sellers-orders?parPage=${5}&&currPage=${1}`,
                 {
                     method: 'GET',
@@ -98,7 +103,7 @@ function SellerDashboard (){
                 }
             );
             const result = await response.json();
-
+            setIsLoading(false);
             if (response.ok) {
                 setOrders(result.orders);
             }
@@ -107,11 +112,13 @@ function SellerDashboard (){
             }
 
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }
-    return(
+    return (
         <div className="admin-dash" >
+            {isLoading && <div className="loading-div"><img src={loadingGif} /></div>}
             <div className="upper-dash" >
                 <div className="small-upper-dash" style={{ backgroundColor: "rgba(181, 250, 185, 1)" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -168,7 +175,7 @@ function SellerDashboard (){
                         <Link to='chat-customer' style={{ textDecoration: "none", color: "var(--text)", display: "flex", alignItems: "center" }}><span>View All</span><FaAngleDoubleRight /></Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "200px", margin: "30px 0px" }}>
-                        {latestMsg.map((msg, i) =><div key={i} className="main-quick" >
+                        {latestMsg.map((msg, i) => <div key={i} className="main-quick" >
                             <div className="pre-profile">
                                 <img src={msg.image} alt="dp" onClick={() => navigate(`/seller/dashboard/chat-customer/${msg.customer_id}`)} style={{ width: "35px", height: '35px', objectFit: "cover", borderRadius: "20px" }} />
                             </div>
@@ -183,11 +190,11 @@ function SellerDashboard (){
                                 </div>
                             </div>
                         </div>)}
-                        
+
                     </div>
                 </div>
             </div>
-            <div className="recent-order" style={{ width: "99%",  margin: "30px 0px", boxSizing: "border-box", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)", color: "var(--text)", borderRadius: "10px", fontSize: "12px" }}>
+            <div className="recent-order" style={{ width: "99%", margin: "30px 0px", boxSizing: "border-box", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)", color: "var(--text)", borderRadius: "10px", fontSize: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                     <span>
                         Recent Orders
@@ -196,25 +203,26 @@ function SellerDashboard (){
                 </div>
                 <div style={{ width: "98%", marginTop: "15px" }}>
                     <table style={{
-                        width: "100%", textAlign: "center",borderCollapse: "separate",borderSpacing: "0 10px"}}>
+                        width: "100%", textAlign: "center", borderCollapse: "separate", borderSpacing: "0 10px"
+                    }}>
                         <thead >
                             <tr >
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Order Id</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Price</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Payment Status</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Order Status</th>
-                                <th scope="col" style={{borderBottom: "1px solid var(--text)"}}>Active</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Order Id</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Price</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Payment Status</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Order Status</th>
+                                <th scope="col" style={{ borderBottom: "1px solid var(--text)" }}>Active</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((o,i)=><tr key={i}>
+                            {orders.map((o, i) => <tr key={i}>
                                 <td>{o.id}</td>
                                 <td>₹{o.total_cost}</td>
                                 <td>{o.payment_status}</td>
                                 <td>{o.order_status}</td>
-                                <td><Link style={{color:'greenyellow'}} to={`/seller/dashboard/order/detail/${o.id}`}>View</Link></td>
+                                <td><Link style={{ color: 'greenyellow' }} to={`/seller/dashboard/order/detail/${o.id}`}>View</Link></td>
                             </tr>)}
-                            
+
                         </tbody>
 
                     </table>

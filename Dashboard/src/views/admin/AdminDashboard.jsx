@@ -10,9 +10,11 @@ import '../../stylesheet/dashboard.css';
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
+import loadingGif from '../../assets/loading3.webp';
 
 function AdminDashboard() {
     const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
+    const [isLoading, setIsLoading] = useState(false);
     const [latestMsg, setLatestMsg] = useState([]);
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
@@ -22,11 +24,13 @@ function AdminDashboard() {
     }, [])
     const getLatestMessage = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_Port}/api/msg/get-latest-msg`, {
                 method: 'GET',
                 credentials: 'include'
             });
             const result = await response.json();
+            setIsLoading(false);
             if (response.ok) {
                 setLatestMsg(result.latestMsg);
             }
@@ -34,11 +38,13 @@ function AdminDashboard() {
                 toast.error('Error! ' + result.message);
             }
         } catch (err) {
+            setIsLoading(false);
             toast.error('Error! ' + err.message)
         }
     }
     const getOrders = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`${Backend_Port}/api/get-all-orders?parPage=${5}&&currPage=${1}`,
                 {
                     method: 'GET',
@@ -46,7 +52,7 @@ function AdminDashboard() {
                 }
             );
             const result = await response.json();
-
+            setIsLoading(false);
             if (response.ok) {
                 setOrders(result.orders);
             }
@@ -55,11 +61,13 @@ function AdminDashboard() {
             }
 
         } catch (err) {
+            setIsLoading(false);
             toast.error("Error! " + err.message);
         }
     }
     return (
         <div className="admin-dash" >
+            {isLoading && <div className="loading-div"><img src={loadingGif} /></div>}
             <div className="upper-dash" >
                 <div className="small-upper-dash" style={{ backgroundColor: "rgba(181, 250, 185, 1)" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -157,14 +165,14 @@ function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((o,i)=><tr key={i}>
+                            {orders.map((o, i) => <tr key={i}>
                                 <td>#{o.id}</td>
                                 <td>₹{o.total_cost}</td>
                                 <td>{o.payment_status}</td>
                                 <td>{o.order_status}</td>
-                                <td><Link style={{color:'greenyellow'}} to={`/admin/dashboard/orders/details/${o.id}`}>View</Link></td>
+                                <td><Link style={{ color: 'greenyellow' }} to={`/admin/dashboard/orders/details/${o.id}`}>View</Link></td>
                             </tr>)}
-                            
+
                         </tbody>
 
                     </table>
