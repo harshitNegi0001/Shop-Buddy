@@ -67,7 +67,7 @@ class Product {
 
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($4::int IS NULL OR seller_id = $4::int) )ORDER BY id DESC OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
-                const prodRatings = result.rows.map(p => calculateRating(p.comments));
+                const prodRatings = result.rows.map(p => calculateRating(p.comments||[]));
 
                 return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
@@ -77,7 +77,7 @@ class Product {
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($4::int IS NULL OR seller_id = $4::int)) ORDER BY id DESC  OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
 
-                const prodRatings = result.rows.map(p => calculateRating(p.comments));
+                const prodRatings = result.rows.map(p => calculateRating(p.comments||[]));
                 return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
             }
@@ -113,9 +113,9 @@ class Product {
         const { productId } = req.query;
         try {
             const result = await db.query("SELECT * FROM product_detail WHERE id = $1", [productId]);
-            const ratingObj = calculateRating(result.rows[0].comments);
+            const ratingObj = calculateRating(result.rows[0].comments||[]);
             let lastestRatings = []
-            for (const cmnt of result.rows[0].comments.slice().reverse()) {
+            if(result.rows[0].comments){for (const cmnt of result.rows[0].comments.slice().reverse()) {
 
                 if (lastestRatings.length >= 3) {
                     break;
@@ -125,7 +125,7 @@ class Product {
                         lastestRatings.push(cmnt);
                     }
                 }
-            }
+            }}
 
             const custIds = lastestRatings.map(c => c.customer_id);
 
