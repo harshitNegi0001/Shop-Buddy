@@ -67,7 +67,7 @@ class Product {
 
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($4::int IS NULL OR seller_id = $4::int) )ORDER BY id DESC OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND discount > 0 AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
-                const prodRatings = result.rows.map(p => calculateRating(p.comments||[]));
+                const prodRatings = result.rows.map(p => calculateRating(p.comments || []));
 
                 return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
@@ -77,7 +77,8 @@ class Product {
                 const result = await db.query("SELECT * FROM product_detail WHERE ((name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($4::int IS NULL OR seller_id = $4::int)) ORDER BY id DESC  OFFSET $2 LIMIT $3 ", [searchItem, (parPage * (currPage - 1)), parPage, sellerId]);
                 const totalItems = await db.query("SELECT * FROM product_detail WHERE (name ILIKE $1 OR brand ILIKE $1 OR category_name ILIKE $1) AND ($2::int IS NULL OR seller_id = $2::int)", [searchItem, sellerId]);
 
-                const prodRatings = result.rows.map(p => calculateRating(p.comments||[]));
+                const prodRatings = result.rows.map(p => calculateRating(p.comments || []));
+
                 return returnRes(res, 200, { message: "successful", products: result.rows, totalItems: totalItems.rowCount, ratings: prodRatings });
 
             }
@@ -113,19 +114,22 @@ class Product {
         const { productId } = req.query;
         try {
             const result = await db.query("SELECT * FROM product_detail WHERE id = $1", [productId]);
-            const ratingObj = calculateRating(result.rows[0].comments||[]);
+            let ratingObj;
+            if (result.rows[0].comments) { ratingObj = calculateRating(result.rows[0].comments || []); }
             let lastestRatings = []
-            if(result.rows[0].comments){for (const cmnt of result.rows[0].comments.slice().reverse()) {
+            if (result.rows[0].comments) {
+                for (const cmnt of result.rows[0].comments.slice().reverse()) {
 
-                if (lastestRatings.length >= 3) {
-                    break;
-                }
-                else {
-                    if (cmnt.comment) {
-                        lastestRatings.push(cmnt);
+                    if (lastestRatings.length >= 3) {
+                        break;
+                    }
+                    else {
+                        if (cmnt.comment) {
+                            lastestRatings.push(cmnt);
+                        }
                     }
                 }
-            }}
+            }
 
             const custIds = lastestRatings.map(c => c.customer_id);
 
@@ -154,15 +158,15 @@ class Product {
             try {
 
                 const oldCom = await db.query('SELECT comments FROM products WHERE id = $1', [prodId]);
-
-                const isAlready = oldCom.rows[0].comments.find(i => i.customer_id == id);
+                const cmnt = (Array.isArray(oldCom.rows[0].comments)) ? oldCom.rows[0].comments : [];
+                const isAlready = cmnt.find(i => i.customer_id == id);
 
                 if (!isAlready) {
-                    const updatedCom = [...oldCom.rows[0].comments, comments];
+                    const updatedCom = [...cmnt, comments];
                     await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
                 }
                 else {
-                    const filteredCom = oldCom.rows[0].comments.filter(c => c.customer_id != id);
+                    const filteredCom = cmnt.filter(c => c.customer_id != id);
                     const updatedCom = [...filteredCom, comments];
                     await db.query("UPDATE products SET comments = $1 WHERE id = $2", [updatedCom, prodId]);
                 }

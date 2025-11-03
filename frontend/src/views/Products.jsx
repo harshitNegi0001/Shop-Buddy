@@ -84,7 +84,7 @@ function Products() {
                             <span className="prod-card-name" >{p.name}</span>
                             <div><span className="card-new-price" >₹{p.price - (p.price * p.discount / 100)}</span> {p.discount > 0 ? <span className="card-old-price" >₹{p.price}</span> : null} {p.discount > 0 ? <span className="card-discount" >{p.discount}% off</span> : null}</div>
                             <div style={{ color: "var(--text)", fontSize: "12px" }}>free delivery</div>
-                            <div className="card-rating-div" ><span className="prod-rating" >{ratings?.[i].avgRating} <FaStar /></span><span className="card-reviwes">({ratings?.[i].totalReview} Reviews)</span></div>
+                            <div className="card-rating-div" ><span className="prod-rating" >{ratings?.[i].avgRating||0} <FaStar /></span><span className="card-reviwes">({ratings?.[i].totalReview} Reviews)</span></div>
                         </div>
                     )}
                 </div>

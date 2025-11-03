@@ -5,6 +5,7 @@ function calculateRating (prod_cmnt){
     let four =0;
     let five=0;
     let totalRating=prod_cmnt.length;
+    
     let totaStar = 0;
     let totalReview =0;
     for (const cmnt of prod_cmnt) {
@@ -20,7 +21,8 @@ function calculateRating (prod_cmnt){
         two+=(star==2)?1:0;
         one+=(star==1)?1:0;
     }
-    const avgRating = totaStar/totalRating
+    // console.log(totalRating)
+    const avgRating = (totalRating>0)?totaStar/totalRating:0;
     const ratingObj = {
         totalStars:totalRating,
         totalReview:totalReview,

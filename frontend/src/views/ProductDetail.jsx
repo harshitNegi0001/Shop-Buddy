@@ -32,9 +32,9 @@ function ProductDetail() {
     const [ratings, setRating] = useState({
         avgRating: 0,
         totalReview: 0,
-        totalStars: 1,
+        totalStars: 0,
         ratingDetail: {
-            five: 1,
+            five: 0,
             four: 0,
             three: 0,
             two: 0,
@@ -153,7 +153,7 @@ const [userFeedback,setUserFeedback] = useState('');
                 setProductDetails(result.prodDetail);
                 // console.log(result.topRating);
                 setTopRating(result.topRating);
-                setRating(result.rating);
+                setRating(result.rating||ratings);
                 setSelectedImg(result.prodDetail?.images?.[0]);
                 const maxPrice = result.prodDetail.price;
                 const discount = result.prodDetail.discount;
