@@ -4,15 +4,17 @@ import keySvg from '../../assets/key-svgrepo-com.svg';
 import errorSvg from '../../assets/error-svgrepo-com.svg';
 import wrongSvg from '../../assets/wrong-svgrepo-com.svg';
 import loading from '../../assets/loading3.webp'
-import { useActionState,useContext, useState } from 'react';
+import { useActionState, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
+import { RiCloseCircleFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/role_management';
 import { jwtDecode } from "jwt-decode";
 
 function AdminLogin() {
-    const {login} = useContext(AuthContext)
+    const { login } = useContext(AuthContext)
     const navigate = useNavigate();
+    const [showCread, setShowCread] = useState(true);
     const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
@@ -43,14 +45,14 @@ function AdminLogin() {
                     credentials: "include"
                 });
                 const result = await response.json();
-                
+
                 if (!response.ok) {
                     toast.error(result.message);
                 }
                 else {
                     toast.success(result.message);
                     const decodeToken = jwtDecode(result.token);
-                    login(result.token,decodeToken.role,decodeToken.id);
+                    login(result.token, decodeToken.role, decodeToken.id);
                     // navigate('/');
                 }
 
@@ -67,9 +69,14 @@ function AdminLogin() {
 
     }
     const [data, action, pendding] = useActionState(handleInput);
-    const [errMessage, setErrMessage] = useState('')
+    const [errMessage, setErrMessage] = useState('');
     return (
         <div className='auth-container'>
+            {showCread && <div style={{ border: "2px solid green", fontSize: '14px', padding: '10px', width: '290px', borderRadius: '10px', display: 'flex', flexDirection: 'column', position: 'fixed', top: '0', backgroundColor: '#b8ffaeff' }}>
+                <div onClick={() => setShowCread(false)} style={{ position: 'absolute', right: '0px', top: '0px', width: 'fit-content', display: 'flex', justifyContent: 'end' }}><RiCloseCircleFill size={24} /></div>
+                <span>Email : <span>negiharshitsingh919@gmail.com</span></span>
+                <span>Password : <span>negI000@#</span></span>
+            </div>}
             {errMessage && <div className="error-box">
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <img src={errorSvg} alt="" />
@@ -78,7 +85,7 @@ function AdminLogin() {
 
                 <img src={wrongSvg} alt="" onClick={() => setErrMessage('')} />
             </div>}
-            {pendding&&<div className='load-back'>
+            {pendding && <div className='load-back'>
                 <img className='loading' src={loading} alt='loading...' />
             </div>}
 

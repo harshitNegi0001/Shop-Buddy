@@ -9,8 +9,11 @@ import { useActionState, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../context/role_management';
 import { jwtDecode } from "jwt-decode";
+import { RiCloseCircleFill } from "react-icons/ri";
+
 function Login() {
     const { login } = useContext(AuthContext);
+    const [showCread,setShowCread] = useState(true);
     const Backend_Port = import.meta.env.VITE_BACKEND_PORT;
     async function handleInput(pre, curr) {
         const email = curr.get('email').trim();
@@ -66,6 +69,11 @@ function Login() {
     const [errMessage, setErrMessage] = useState('')
     return (
         <div className='auth-container'>
+            {showCread && <div style={{ border: "2px solid green",fontSize:'14px', padding: '10px', width: '260px', borderRadius: '10px', display: 'flex', flexDirection: 'column', position: 'fixed', top: '0', backgroundColor: '#b8ffaeff' }}>
+                <div onClick={() => setShowCread(false)} style={{ position: 'absolute', right: '0px', top: '0px', width: 'fit-content', display: 'flex', justifyContent: 'end' }}><RiCloseCircleFill size={24} /></div>
+                <span>Email : <span>rajudhami001@gmail.com</span></span>
+                <span>Password : <span>newAcc000@#</span></span>
+            </div>}
             {errMessage && <div className="error-box">
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <img src={errorSvg} alt="" />

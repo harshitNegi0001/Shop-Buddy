@@ -1,4 +1,6 @@
 import '../stylesheet/authPages.css';
+import { RiCloseCircleFill } from "react-icons/ri";
+
 import emailSvg from '../assets/email-svgrepo-com.svg';
 import keySvg from '../assets/key-svgrepo-com.svg';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,6 +14,7 @@ import { login } from '../Store/reducer/authReducer';
 function Login() {
     const backendPort = import.meta.env.VITE_BACKEND_PORT;
     const dispatch = useDispatch();
+    const [showCread,setShowCread] = useState(true);
 
     const navigate = useNavigate();
     async function handleInput(pre, curr) {
@@ -64,7 +67,11 @@ function Login() {
 
     return (
         <div className='auth-container'>
-
+            {showCread&&<div style={{border:"2px solid green",fontSize:'14px',padding:'10px',width:'230px',borderRadius:'10px',display:'flex',flexDirection:'column',position:'fixed',top:'0',backgroundColor:'#b8ffaeff'}}>
+                <div onClick={()=>setShowCread(false)} style={{position:'absolute',right:'0px',top:'0px',width:'fit-content',display:'flex',justifyContent:'end'}}><RiCloseCircleFill size={24}/></div>
+                <span>Email : <span>brohit@test.com</span></span>
+                <span>Password : <span>2222</span></span>
+            </div>}
             {pendding && <div className='load-back'>
                 <img className='loading' src={loading} alt='loading...' />
             </div>}
@@ -82,13 +89,17 @@ function Login() {
 
                             <input className='input-box' type="text" id='email' autoComplete='new-email' name='email' required />
                             <label htmlFor="email" className='label'>Email</label>
+                            
                         </div>
+                        
                         <div className='input-div' style={{ display: "flex" }}>
                             <label htmlFor="password"><img className='svg-icon' src={keySvg} alt="lock-svg" /></label>
 
                             <input className='input-box' type="password" autoComplete='new-pass' id='password' name='password' required />
                             <label htmlFor="password" className='label'>Password</label>
+                            
                         </div>
+                        
                         <button className='submit-btn'>Login</button>
                         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
                             <div style={{ width: "45%", backgroundColor: "var(--text)", height: "1px", marginRight: "2px" }}></div>
