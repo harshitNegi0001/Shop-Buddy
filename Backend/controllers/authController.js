@@ -24,12 +24,6 @@ class AuthController {
           id: admin.id,
           role: admin.role
         });
-        res.cookie('accessToken', token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        })
         return returnRes(res, 200, {
           message: "Login Successful",
           token: token
@@ -69,11 +63,11 @@ class AuthController {
       }
       else if (role === 'customer') {
         // console.log("customer check")
-        
+
         const user = await db.query("SELECT id,name,image,address,email,phone_no FROM customers WHERE id =$1", [id]);
 
         if (user.rows.length > 0) {
-          
+
           return returnRes(res, 200, { message: "Success", userId: user.rows[0].id, userInfo: user.rows[0], userRole: 'customer' })
         }
         else {
@@ -111,12 +105,6 @@ class AuthController {
         id: seller.s_id,
         role: seller.s_role
       });
-      res.cookie('accessToken', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      })
       return returnRes(res, 201, { message: "Registered Successful", token: token });
 
     }
@@ -140,13 +128,6 @@ class AuthController {
           id: searchEmail.rows[0].s_id,
           role: searchEmail.rows[0].s_role
         })
-        res.cookie('accessToken', token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        });
-
         return returnRes(res, 200, { message: `Welcome back ${searchEmail.rows[0].s_name}`, token: token });
       }
       return returnRes(res, 401, { message: "Wrong Email Or Password" });
@@ -248,13 +229,13 @@ class AuthController {
             id: user.rows[0].id,
             role: 'customer'
           })
-          res.cookie('accessToken', token, {
+          res.cookie('userToken', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           });
-          res.cookie('isAuth', true, {
+          res.cookie('authUser', true, {
             httpOnly: false,
             secure: true,
             sameSite: 'none',
@@ -275,18 +256,22 @@ class AuthController {
     }
   }
   logout = async (req, res) => {
-    res.cookie('accessToken', '', {
+    
+
+    res.cookie('userToken', '', {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       expires: new Date(0),
     })
-    res.cookie('isAuth', false, {
+    
+    res.cookie('authUser', false, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
       expires: new Date(0),
-    })
+    });
+
     return returnRes(res, 200, { message: "Successfully Logout" });
   }
 
@@ -332,20 +317,20 @@ class AuthController {
         id: customer.id,
         role: 'customer'
       });
-      res.cookie('accessToken', token, {
+      res.cookie('userToken', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
-      res.cookie('isAuth', true, {
+      res.cookie('authUser', true, {
         httpOnly: false,
         secure: true,
         sameSite: 'none',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       // console.log(customer)
-      return returnRes(res, 201, { message: "Registered Successful", token: token ,userInfo:customer});
+      return returnRes(res, 201, { message: "Registered Successful", token: token, userInfo: customer });
 
 
     }

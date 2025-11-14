@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = async(req,res,next)=>{
-    const accessToken = req.cookies.accessToken;
+    const accessToken = req.cookies.accessToken||req.cookies.userToken;
     if (!accessToken) {
         return res.status(409).json({message:'Please Login First'});
     } else {
