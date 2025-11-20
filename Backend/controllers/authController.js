@@ -24,6 +24,12 @@ class AuthController {
           id: admin.id,
           role: admin.role
         });
+        res.cookie('accessToken', token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
         return returnRes(res, 200, {
           message: "Login Successful",
           token: token
@@ -105,6 +111,12 @@ class AuthController {
         id: seller.s_id,
         role: seller.s_role
       });
+      res.cookie('accessToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      });
       return returnRes(res, 201, { message: "Registered Successful", token: token });
 
     }
@@ -127,7 +139,13 @@ class AuthController {
         const token = await createToken({
           id: searchEmail.rows[0].s_id,
           role: searchEmail.rows[0].s_role
-        })
+        });
+        res.cookie('accessToken', token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
         return returnRes(res, 200, { message: `Welcome back ${searchEmail.rows[0].s_name}`, token: token });
       }
       return returnRes(res, 401, { message: "Wrong Email Or Password" });
@@ -256,7 +274,7 @@ class AuthController {
     }
   }
   logout = async (req, res) => {
-    
+
 
     res.cookie('userToken', '', {
       httpOnly: true,
@@ -264,7 +282,7 @@ class AuthController {
       sameSite: 'none',
       expires: new Date(0),
     })
-    
+
     res.cookie('authUser', false, {
       httpOnly: false,
       secure: true,
