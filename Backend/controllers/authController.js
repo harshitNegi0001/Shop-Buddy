@@ -281,6 +281,12 @@ class AuthController {
       secure: true,
       sameSite: 'none',
       expires: new Date(0),
+    });
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(0),
     })
 
     res.cookie('authUser', false, {
