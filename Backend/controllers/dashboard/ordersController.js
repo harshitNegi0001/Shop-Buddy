@@ -21,7 +21,7 @@ class Orders {
             }
         }
         else {
-            return returnRes(res, 403, { message: "You are not allowed" });
+            return returnRes(res, 403, { message: "Please login first" });
         }
     }
     getMyOrderHist = async (req, res) => {
@@ -37,7 +37,7 @@ class Orders {
             }
         }
         else {
-            return returnRes(res, 403, { message: "You are not allowed" });
+            return returnRes(res, 403, { message: "Please login first" });
         }
     }
 
@@ -75,7 +75,7 @@ class Orders {
             }
         }
         else {
-            return returnRes(res, 403, { message: "You are not allowed" });
+            return returnRes(res, 403, { message: "Please login first" });
         }
     }
     getOrderDetail = async (req, res) => {
@@ -104,7 +104,7 @@ class Orders {
             }
         }
         else {
-            return returnRes(res, 403, { message: "You are not allowed" });
+            return returnRes(res, 403, { message: "Please login first" });
         }
     }
 }
