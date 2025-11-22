@@ -1,18 +1,18 @@
 import jwt from 'jsonwebtoken';
 
-export const authMiddleware = async(req,res,next)=>{
-    const accessToken = req.cookies.accessToken||req.cookies.userToken;
+export const authMiddleware = async (req, res, next) => {
+    const accessToken = req.cookies.accessToken || req.cookies.userToken;
     if (!accessToken) {
-        return res.status(409).json({message:'Please Login First'});
+        return res.status(409).json({ message: 'Please Login First' });
     } else {
         try {
-            const decodeToken = await jwt.verify(accessToken,process.env.SECRET);
-            req.id= decodeToken.id;
+            const decodeToken = await jwt.verify(accessToken, process.env.SECRET);
+            req.id = decodeToken.id;
             req.role = decodeToken.role;
             next();
         } catch (err) {
             console.log(err);
-            return res.status(409).json({message:err});
+            return res.status(409).json({ message: err });
         }
     }
 }
