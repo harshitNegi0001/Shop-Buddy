@@ -11,7 +11,7 @@ class AuthController {
   adminLogin = async (req, res) => {
     try {
       const { email, password } = req.body;
-
+      
       const result = await db.query('SELECT * FROM admins WHERE email = $1', [email]);
       if (result.rows.length === 0) {
         console.log("no user found");
@@ -28,8 +28,6 @@ class AuthController {
           httpOnly: true,
           secure: true,
           sameSite: 'none',
-          domain: 'shop-buddy-qaa8.vercel.app',
-          path: '/',
           expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
         return returnRes(res, 200, {
@@ -117,8 +115,6 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        domain: 'shop-buddy-qaa8.vercel.app',
-        path: '/',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       return returnRes(res, 201, { message: "Registered Successful", token: token });
@@ -148,8 +144,6 @@ class AuthController {
           httpOnly: true,
           secure: true,
           sameSite: 'none',
-          domain: 'shop-buddy-qaa8.vercel.app',
-          path: '/',
           expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
         return returnRes(res, 200, { message: `Welcome back ${searchEmail.rows[0].s_name}`, token: token });
@@ -257,8 +251,6 @@ class AuthController {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-            domain: 'shop-buddy-pi.vercel.app',
-            path: '/',
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
           });
           res.cookie('authUser', true, {
@@ -353,8 +345,6 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        domain: 'shop-buddy-pi.vercel.app',
-        path: '/',
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       res.cookie('authUser', true, {
