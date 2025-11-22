@@ -11,7 +11,7 @@ class AuthController {
   adminLogin = async (req, res) => {
     try {
       const { email, password } = req.body;
-      
+
       const result = await db.query('SELECT * FROM admins WHERE email = $1', [email]);
       if (result.rows.length === 0) {
         console.log("no user found");
@@ -23,6 +23,12 @@ class AuthController {
         const token = await createToken({
           id: admin.id,
           role: admin.role
+        });
+        res.cookie('userToken', '', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          expires: new Date(0),
         });
         res.cookie('accessToken', token, {
           httpOnly: true,
@@ -111,6 +117,12 @@ class AuthController {
         id: seller.s_id,
         role: seller.s_role
       });
+      res.cookie('userToken', '', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        expires: new Date(0),
+      });
       res.cookie('accessToken', token, {
         httpOnly: true,
         secure: true,
@@ -139,6 +151,12 @@ class AuthController {
         const token = await createToken({
           id: searchEmail.rows[0].s_id,
           role: searchEmail.rows[0].s_role
+        });
+        res.cookie('userToken', '', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+          expires: new Date(0),
         });
         res.cookie('accessToken', token, {
           httpOnly: true,
@@ -247,6 +265,12 @@ class AuthController {
             id: user.rows[0].id,
             role: 'customer'
           })
+          res.cookie('accessToken', '', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            expires: new Date(0),
+          })
           res.cookie('userToken', token, {
             httpOnly: true,
             secure: true,
@@ -341,6 +365,12 @@ class AuthController {
         id: customer.id,
         role: 'customer'
       });
+      res.cookie('accessToken', '', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        expires: new Date(0),
+      })
       res.cookie('userToken', token, {
         httpOnly: true,
         secure: true,
