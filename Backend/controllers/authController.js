@@ -152,12 +152,7 @@ class AuthController {
           id: searchEmail.rows[0].s_id,
           role: searchEmail.rows[0].s_role
         });
-        res.cookie('userToken', '', {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          expires: new Date(0),
-        });
+        
         res.cookie('accessToken', token, {
           httpOnly: true,
           secure: true,
@@ -265,12 +260,7 @@ class AuthController {
             id: user.rows[0].id,
             role: 'customer'
           })
-          res.cookie('accessToken', '', {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            expires: new Date(0),
-          })
+
           res.cookie('userToken', token, {
             httpOnly: true,
             secure: true,
@@ -300,12 +290,7 @@ class AuthController {
   logout = async (req, res) => {
 
 
-    res.cookie('userToken', '', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      expires: new Date(0),
-    });
+    
     res.cookie('accessToken', '', {
       httpOnly: true,
       secure: true,
@@ -320,6 +305,21 @@ class AuthController {
       expires: new Date(0),
     });
 
+    return returnRes(res, 200, { message: "Successfully Logout" });
+  }
+  userLogout = async (req, res) => {
+    res.cookie('userToken', '', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(0),
+    }); 
+    res.cookie('authUser', false, {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(0),
+    });
     return returnRes(res, 200, { message: "Successfully Logout" });
   }
 
@@ -365,12 +365,7 @@ class AuthController {
         id: customer.id,
         role: 'customer'
       });
-      res.cookie('accessToken', '', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        expires: new Date(0),
-      })
+
       res.cookie('userToken', token, {
         httpOnly: true,
         secure: true,

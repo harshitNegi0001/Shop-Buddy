@@ -70,7 +70,7 @@ function SellerChat() {
         try {
 
             setIsLoading(true);
-            const response = await fetch(`${Backend_port}/api/msg/seller-customer?sellerId=${sellerId}`, {
+            const response = await fetch(`${Backend_port}/api/msg/customer-seller?sellerId=${sellerId}`, {
                 method: "GET",
                 credentials: "include"
             }
@@ -103,7 +103,7 @@ function SellerChat() {
                 }
                 socket.emit('send-message', (msg))
                 // setIsLoading(true);
-                const response = await fetch(`${Backend_port}/api/msg/send-seller-customer`, {
+                const response = await fetch(`${Backend_port}/api/msg/send-customer-seller`, {
                     method: "POST",
                     headers: {
                         "Content-type": "application/json"
@@ -132,10 +132,11 @@ function SellerChat() {
         }
 
     }
+
     const getChatList = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`${Backend_port}/api/msg/get-chatlist?required=sellers`, {
+            const response = await fetch(`${Backend_port}/api/msg/get-chatlist-for-user?required=sellers`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -152,6 +153,7 @@ function SellerChat() {
         } catch (err) {
             setIsLoading(false);
             toast.error("Error! " + err.message);
+            
         }
     }
     const handleSellerClick = (id) => {

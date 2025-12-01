@@ -11,7 +11,7 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT),
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: { rejectUnauthorized: false } // 🔐 Required for Aiven
+  ssl: { rejectUnauthorized: false } 
 });
 
 // Test initial connection

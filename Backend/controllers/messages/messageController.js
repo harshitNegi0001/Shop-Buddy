@@ -38,11 +38,7 @@ class Messages {
         const role = req.role;
         const id = req.id;
         const { required } = req.query;
-        /** 
-         * select c.id,c.name,c.image from customers as c join seller_customer as sc on c.id = sc.customer_id WHERE sc.seller_id = 1 GROUP BY (c.id , c.name ,c.image) 
-         * 
-
-        */
+        
 
         try {
             if (role == 'seller') {

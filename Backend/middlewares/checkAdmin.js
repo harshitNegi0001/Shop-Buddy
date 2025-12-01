@@ -18,8 +18,8 @@ export const checkAdmin = async (req, res, next) => {
             }
 
         } catch (err) {
-            console.log(err);
-            return res.status(409).json({ message: err });
+            // console.log(err);
+            return res.status(409).json({ message: 'Invalid Token or Server error' });
         }
     }
 }

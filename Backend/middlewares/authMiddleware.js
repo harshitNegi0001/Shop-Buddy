@@ -11,8 +11,8 @@ export const authMiddleware = async (req, res, next) => {
             req.role = decodeToken.role;
             next();
         } catch (err) {
-            console.log(err);
-            return res.status(409).json({ message: err });
+            // console.log(err);
+            return res.status(409).json({ message: 'Invalid Token or Server Error' });
         }
     }
 }
