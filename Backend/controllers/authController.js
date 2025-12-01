@@ -24,12 +24,7 @@ class AuthController {
           id: admin.id,
           role: admin.role
         });
-        res.cookie('userToken', '', {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
-          expires: new Date(0),
-        });
+        
         res.cookie('accessToken', token, {
           httpOnly: true,
           secure: true,
@@ -117,12 +112,7 @@ class AuthController {
         id: seller.s_id,
         role: seller.s_role
       });
-      res.cookie('userToken', '', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        expires: new Date(0),
-      });
+      
       res.cookie('accessToken', token, {
         httpOnly: true,
         secure: true,
